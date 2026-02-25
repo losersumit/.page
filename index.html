@@ -1091,12 +1091,12 @@
 
         <div class="hero-stats">
             <div class="stat-card">
-                <div class="stat-num" id="hero-stat-drivers">500+</div>
-                <div class="stat-lbl">Active Drivers</div>
+                <div class="stat-num" id="hero-stat-enlisted">--</div>
+                <div class="stat-lbl">Enlisted Drivers</div>
             </div>
             <div class="stat-card">
-                <div class="stat-num" id="hero-stat-miles">1M+</div>
-                <div class="stat-lbl">Miles Hauled</div>
+                <div class="stat-num" id="hero-stat-miles">--</div>
+                <div class="stat-lbl">KM Delivered</div>
             </div>
             <div class="stat-card">
                 <div class="stat-num">100%</div>
@@ -1309,26 +1309,22 @@
     <section id="stats">
         <div class="stats-row" style="row-gap: 60px;">
             <div class="stat-big reveal reveal-delay-1">
-                <div class="num" id="stat-active-drivers">--</div>
-                <div class="lbl">Active Drivers</div>
-            </div>
-            <div class="stat-big reveal reveal-delay-2">
                 <div class="num" id="stat-enlisted">--</div>
                 <div class="lbl">Enlisted Drivers</div>
             </div>
-            <div class="stat-big reveal reveal-delay-3">
+            <div class="stat-big reveal reveal-delay-2">
                 <div class="num" id="stat-miles">--</div>
-                <div class="lbl">Miles Delivered (km)</div>
+                <div class="lbl">KM Delivered</div>
             </div>
-            <div class="stat-big reveal reveal-delay-1">
+            <div class="stat-big reveal reveal-delay-3">
                 <div class="num" id="stat-driving-time">--</div>
                 <div class="lbl">Driving Time (hrs)</div>
             </div>
-            <div class="stat-big reveal reveal-delay-2">
+            <div class="stat-big reveal reveal-delay-1">
                 <div class="num" id="stat-net-worth">--</div>
                 <div class="lbl">Net Worth ($)</div>
             </div>
-            <div class="stat-big reveal reveal-delay-3">
+            <div class="stat-big reveal reveal-delay-2">
                 <div class="num">100%</div>
                 <div class="lbl">Commitment</div>
             </div>
@@ -1393,10 +1389,15 @@
                 Ready to join the Command? Fill out this quick questionnaire to start your application process. Upon
                 submission, you'll be directed to our recruitment server.
             </p>
-            <form onsubmit="submitApplication(event)">
+            <form onsubmit="submitApplication(event)" id="enlistForm">
+                <div class="form-group">
+                    <label class="form-label">Your Discord Username <span
+                            style="color:var(--muted);font-weight:400;">(e.g. john#1234 or john)</span></label>
+                    <input class="form-input" id="f-username" placeholder="Your Discord username" required>
+                </div>
                 <div class="form-group">
                     <label class="form-label">Will you be active?</label>
-                    <select class="form-select" required>
+                    <select class="form-select" id="f-active" required>
                         <option value="">Select an option</option>
                         <option value="Yes">Yes</option>
                         <option value="No">No</option>
@@ -1404,7 +1405,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Will you be loyal and obey the Commander?</label>
-                    <select class="form-select" required>
+                    <select class="form-select" id="f-loyal" required>
                         <option value="">Select an option</option>
                         <option value="Yes">Yes</option>
                         <option value="No">No</option>
@@ -1412,27 +1413,31 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Give your introduction in brief!</label>
-                    <textarea class="form-textarea" placeholder="Tell us about yourself..." required></textarea>
+                    <textarea class="form-textarea" id="f-intro" placeholder="Tell us about yourself..."
+                        required></textarea>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">What makes you a better than other applicants?</label>
-                    <textarea class="form-textarea" placeholder="Your specific skills or traits..." required></textarea>
+                    <label class="form-label">What makes you better than other applicants?</label>
+                    <textarea class="form-textarea" id="f-better" placeholder="Your specific skills or traits..."
+                        required></textarea>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Why did you chose NMC over other VTCs?</label>
-                    <textarea class="form-textarea" placeholder="Your reason for joining..." required></textarea>
+                    <label class="form-label">Why did you choose NMC over other VTCs?</label>
+                    <textarea class="form-textarea" id="f-whynmc" placeholder="Your reason for joining..."
+                        required></textarea>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Do you accept that the Commander has final authority in all company
                         decisions, including member removal?</label>
-                    <select class="form-select" required>
+                    <select class="form-select" id="f-authority" required>
                         <option value="">Select an option</option>
                         <option value="Yes">Yes, I accept</option>
                         <option value="No">No</option>
                     </select>
                 </div>
-                <button type="submit" class="btn-primary" style="width:100%; justify-content:center; margin-top:10px;">
-                    Submit Application & Join Discord
+                <button type="submit" id="enlistSubmitBtn" class="btn-primary"
+                    style="width:100%; justify-content:center; margin-top:10px;">
+                    Submit Application &amp; Join Discord
                 </button>
             </form>
         </div>
@@ -1457,9 +1462,66 @@
             }
             window.closeEnlistModal = closeEnlistModal;
 
-            function submitApplication(e) {
+            async function submitApplication(e) {
                 e.preventDefault();
-                window.location.href = "https://discord.gg/qwRUQ6msT8";
+                const btn = document.getElementById('enlistSubmitBtn');
+                btn.disabled = true;
+                btn.textContent = 'Submitting...';
+
+                const username = document.getElementById('f-username').value.trim();
+                const active = document.getElementById('f-active').value;
+                const loyal = document.getElementById('f-loyal').value;
+                const intro = document.getElementById('f-intro').value.trim();
+                const better = document.getElementById('f-better').value.trim();
+                const whyNMC = document.getElementById('f-whynmc').value.trim();
+                const authority = document.getElementById('f-authority').value;
+
+                const webhookUrl = 'https://discord.com/api/webhooks/1476223568780988651/d5CFOWcR48_ezrYDVeyElh3b-1wbuGgidHhe4KiL9YilXg7NN-8P1Z5kKA2TZhx6gmSj';
+
+                const payload = {
+                    embeds: [{
+                        title: 'New Enlistment Application (Website)',
+                        color: 0x00ff00,
+                        author: { name: username },
+                        fields: [
+                            { name: '1. Will you be active?', value: active, inline: true },
+                            { name: '2. Will you be loyal and obey the Commander?', value: loyal, inline: true },
+                            { name: '3. Introduction', value: intro || '*No answer*' },
+                            { name: '4. What makes you better?', value: better || '*No answer*' },
+                            { name: '5. Why NMC?', value: whyNMC || '*No answer*' },
+                            { name: '6. Accepts Commander Authority?', value: authority || '*No answer*' },
+                        ],
+                        timestamp: new Date().toISOString()
+                    }]
+                };
+
+                try {
+                    const res = await fetch(webhookUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (res.ok || res.status === 204) {
+                        btn.textContent = '✅ Submitted! Redirecting to Discord...';
+                        btn.style.background = 'linear-gradient(135deg,#22c55e,#16a34a)';
+                        document.getElementById('enlistForm').reset();
+                        setTimeout(() => {
+                            window.open('https://discord.gg/qwRUQ6msT8', '_blank');
+                            closeEnlistModal();
+                            btn.disabled = false;
+                            btn.textContent = 'Submit Application & Join Discord';
+                            btn.style.background = '';
+                        }, 2000);
+                    } else {
+                        throw new Error(`HTTP ${res.status}`);
+                    }
+                } catch (err) {
+                    console.error('Webhook error:', err);
+                    btn.disabled = false;
+                    btn.textContent = 'Submit Application & Join Discord';
+                    alert('❌ Failed to submit. Please try again or join Discord directly.');
+                }
             }
             window.submitApplication = submitApplication;
 
@@ -1476,75 +1538,88 @@
             /* ─── Supabase Integration ───────────────────────────────── */
             const SUPABASE_URL = 'https://aijrvldtilncnclvvles.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpanJ2bGR0aWxuY25jbHZ2bGVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1MDQ2MjgsImV4cCI6MjA4MTA4MDYyOH0.ASKDuChVVlCzW7cnfUJQ2TbPUx90HPKZ60c6o7-s_AM';
+            const TARGET_GUILD_ID = '1448027116074434593';
+
             /* Guard: only init Supabase if CDN loaded (it is async so may not be ready yet) */
             let supabase = null;
             if (window.supabase) {
                 supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             }
 
-            async function fetchRealtimeStats() {
-                try {
-                    // 1. Fetch Active Drivers (count rows in player_stats)
-                    const { count: driverCount, error: countErr } = await supabase
-                        .from('player_stats')
-                        .select('*', { count: 'exact', head: true });
+            /* ─── Helper: apply guild-data values to DOM ─────────────── */
+            function applyGuildStats(guildData) {
+                if (!guildData) return;
+                animateRealValue('stat-enlisted', guildData.enlisted_drivers || 0, '');
+                animateRealValue('hero-stat-enlisted', guildData.enlisted_drivers || 0, '');
+                animateRealValue('stat-net-worth', guildData.net_worth || 0, '', true);
+            }
 
-                    // 2. Fetch sum of total_distance_km and total_time_minutes
-                    // Note: Supabase JS client doesn't do sum across all rows out of the box unless via rpc.
-                    // We'll fetch all rows to calculate sum since it's client side, or if large, ideally use a view/rpc.
-                    // Assuming a reasonable number of players for now.
+            async function fetchRealtimeStats() {
+                if (!supabase) return;
+                try {
+                    // 1. Guild-level stats from approved_guilds
+                    const { data: guildData, error: guildErr } = await supabase
+                        .from('approved_guilds')
+                        .select('enlisted_drivers, net_worth')
+                        .eq('guild_id', TARGET_GUILD_ID)
+                        .single();
+
+                    if (guildErr) console.error('Guild fetch error:', guildErr.message);
+                    else applyGuildStats(guildData);
+
+                    // 2. Get all player UUIDs that belong to this guild
+                    const { data: guildPlayers, error: playersErr } = await supabase
+                        .from('players')
+                        .select('id')
+                        .eq('guild_id', TARGET_GUILD_ID);
+
+                    if (playersErr) { console.error('Players fetch error:', playersErr.message); return; }
+
+                    const playerIds = (guildPlayers || []).map(p => p.id);
+                    if (playerIds.length === 0) return;
+
+                    // 3. Fetch player_stats for only those players
                     const { data: statsData, error: statsErr } = await supabase
                         .from('player_stats')
-                        .select('total_distance_km, total_time_minutes');
+                        .select('total_distance_km, total_time_minutes')
+                        .in('player_id', playerIds);
+
+                    if (statsErr) { console.error('Stats fetch error:', statsErr.message); return; }
 
                     let totalDistance = 0;
                     let totalTimeMins = 0;
-                    if (statsData) {
-                        statsData.forEach(s => {
-                            totalDistance += (s.total_distance_km || 0);
-                            totalTimeMins += (s.total_time_minutes || 0);
-                        });
-                    }
+                    (statsData || []).forEach(s => {
+                        totalDistance += (s.total_distance_km || 0);
+                        totalTimeMins += (s.total_time_minutes || 0);
+                    });
 
-                    // Driving Time in Hours
                     const totalHours = Math.floor(totalTimeMins / 60);
 
-                    // 3. Fetch Net Worth (sum of total_income from player_stats)
-                    // Assuming total_income represents current balance or total earned.
-                    const { data: incomeData, error: incomeErr } = await supabase
-                        .from('player_stats')
-                        .select('total_income');
-
-                    let netWorth = 0;
-                    if (incomeData) {
-                        incomeData.forEach(i => {
-                            netWorth += (i.total_income || 0);
-                        });
-                    }
-
-                    // 4. Note on Enlisted Count:
-                    // Frontend cannot ping discord API securely.
-                    // We will default 'Enlisted Drivers' to driverCount until a 'server_stats' or discord syncing mechanism is in place.
-                    // In your discord bot guildMemberRoleAdd event, you should update a 'server_stats' table to get precise enlisted role numbers.
-
-                    // Animate stats once fetched
-                    animateRealValue('stat-active-drivers', driverCount || 0, '');
-                    animateRealValue('hero-stat-drivers', driverCount || 0, '+');
-
-                    animateRealValue('stat-enlisted', driverCount || 0, '+'); // Temporary approximation
-
-                    animateRealValue('stat-miles', totalDistance || 0, ' km');
-                    animateRealValue('hero-stat-miles', totalDistance || 0, ' km');
-
-                    animateRealValue('stat-driving-time', totalHours || 0, ' h');
-
-                    animateRealValue('stat-net-worth', netWorth || 0, '$', true);
+                    animateRealValue('stat-miles', totalDistance, ' km');
+                    animateRealValue('hero-stat-miles', totalDistance, ' km');
+                    animateRealValue('stat-driving-time', totalHours, ' h');
 
                 } catch (e) {
-                    console.error("Error fetching realtime stats:", e);
+                    console.error('Error fetching realtime stats:', e);
                 }
             }
 
+            /* ─── Supabase Realtime: approved_guilds live updates ─────── */
+            function subscribeToGuildStats() {
+                if (!supabase) return;
+                supabase
+                    .channel('guild_stats_website')
+                    .on('postgres_changes', {
+                        event: 'UPDATE',
+                        schema: 'public',
+                        table: 'approved_guilds',
+                        filter: 'guild_id=eq.' + TARGET_GUILD_ID
+                    }, (payload) => {
+                        console.log('[REALTIME] approved_guilds updated, refreshing stats...');
+                        applyGuildStats(payload.new);
+                    })
+                    .subscribe();
+            }
             // Custom animation function for realtime format
             function animateRealValue(elementId, target, suffix = '', isCurrency = false) {
                 const el = document.getElementById(elementId);
@@ -1576,8 +1651,11 @@
                 }, 30);
             }
 
-            // Initialize stat fetching only if Supabase loaded
-            if (supabase) fetchRealtimeStats();
+            // Initialize stats and realtime subscription
+            if (supabase) {
+                fetchRealtimeStats();
+                subscribeToGuildStats();
+            }
 
             // ─── Scroll Reveal ────────────────────────────────────────
             const revealEls = document.querySelectorAll('.reveal');
