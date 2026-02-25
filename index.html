@@ -1217,6 +1217,155 @@
                 height: 72px;
             }
         }
+
+        /* ─── Media Gallery ──────────────────────────────────── */
+        .gallery-grid {
+            columns: 3;
+            column-gap: 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 900px) {
+            .gallery-grid {
+                columns: 2;
+            }
+        }
+
+        @media (max-width: 540px) {
+            .gallery-grid {
+                columns: 1;
+            }
+        }
+
+        .gallery-item {
+            break-inside: avoid;
+            margin-bottom: 16px;
+            border-radius: 14px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            border: 1px solid rgba(232, 160, 32, .12);
+            background: var(--surface);
+        }
+
+        .gallery-item img,
+        .gallery-item video {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+            transition: transform .4s;
+        }
+
+        .gallery-item:hover img,
+        .gallery-item:hover video {
+            transform: scale(1.04);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, .8) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity .3s;
+            display: flex;
+            align-items: flex-end;
+            padding: 16px;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        .gallery-overlay-text {
+            font-size: 13px;
+            color: #fff;
+            line-height: 1.5;
+        }
+
+        .gallery-video-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, .65);
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            letter-spacing: .5px;
+        }
+
+        .gallery-empty {
+            grid-column: 1 / -1;
+            color: var(--muted);
+            font-size: 14px;
+            padding: 60px;
+            text-align: center;
+            border: 1px dashed rgba(255, 255, 255, .1);
+            border-radius: 12px;
+        }
+
+        .gallery-empty code {
+            color: var(--gold);
+        }
+
+        /* ─── Lightbox ───────────────────────────────────────── */
+        .lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(0, 0, 0, .92);
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 16px;
+            padding: 24px;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox-img,
+        .lightbox-vid {
+            max-width: 90vw;
+            max-height: 78vh;
+            border-radius: 12px;
+            object-fit: contain;
+            display: none;
+        }
+
+        .lightbox-img.active,
+        .lightbox-vid.active {
+            display: block;
+        }
+
+        .lightbox-desc {
+            color: rgba(255, 255, 255, .75);
+            font-size: 14px;
+            text-align: center;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        .lightbox-close {
+            position: fixed;
+            top: 20px;
+            right: 24px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 28px;
+            cursor: pointer;
+            opacity: .7;
+            transition: opacity .2s;
+        }
+
+        .lightbox-close:hover {
+            opacity: 1;
+        }
     </style>
 </head>
 
@@ -1232,7 +1381,7 @@
         <div class="nav-links">
             <a href="#about">About</a>
             <a href="#divisions">Divisions</a>
-            <a href="#services">Services</a>
+            <a href="#gallery">Gallery</a>
             <a href="#fleet">Fleet</a>
             <a href="#partners">Partners</a>
             <a href="#stats">Stats</a>
@@ -1367,52 +1516,26 @@
         </div>
     </section>
 
-    <!-- ═══════════════════════ SERVICES ══════════════════════ -->
-    <section id="services">
-        <div class="section-tag reveal">What We Do</div>
-        <h2 class="section-title reveal">Our Operations</h2>
-        <p class="section-sub reveal">From general freight to specialized cargo — NMC handles it all with precision and
-            professionalism.</p>
+    <!-- ═══════════════════════ GALLERY ═══════════════════════ -->
+    <section id="gallery">
+        <div class="section-tag reveal">In the Field</div>
+        <h2 class="section-title reveal">Media Gallery</h2>
+        <p class="section-sub reveal">Real operations. Real moments. Captured on the road by NMC drivers.</p>
 
-        <div class="services-grid">
-            <div class="service-card reveal reveal-delay-1">
-                <span class="service-emoji">🚛</span>
-                <div class="service-name">General Freight</div>
-                <div class="service-desc">Standard hauls across all routes and distances. No load too small, no route
-                    too long for our experienced drivers.</div>
-            </div>
-            <div class="service-card reveal reveal-delay-2">
-                <span class="service-emoji">⚠️</span>
-                <div class="service-name">Oversized Loads</div>
-                <div class="service-desc">Heavy machinery, wide loads, and special transport requiring coordinated
-                    convoy operations and expert maneuvering.</div>
-            </div>
-            <div class="service-card reveal reveal-delay-3">
-                <span class="service-emoji">❄️</span>
-                <div class="service-name">Temperature Control</div>
-                <div class="service-desc">Perishable and sensitive cargo transported under precise climate conditions
-                    with refrigerated trailers.</div>
-            </div>
-            <div class="service-card reveal reveal-delay-1">
-                <span class="service-emoji">⛽</span>
-                <div class="service-name">Tanker Operations</div>
-                <div class="service-desc">Liquid and fuel hauling with specialized tanker rigs, following strict safety
-                    and handling protocols.</div>
-            </div>
-            <div class="service-card reveal reveal-delay-2">
-                <span class="service-emoji">📦</span>
-                <div class="service-name">Express Delivery</div>
-                <div class="service-desc">Time-sensitive shipments handled with urgency. Priority routing, maximum
-                    speed, guaranteed on-time arrival.</div>
-            </div>
-            <div class="service-card reveal reveal-delay-3">
-                <span class="service-emoji">🚨</span>
-                <div class="service-name">Convoy Escort</div>
-                <div class="service-desc">Organized multi-unit convoys for special events, community runs, and
-                    high-visibility freight operations.</div>
+        <div class="gallery-grid" id="gallery-grid">
+            <div class="gallery-empty" id="gallery-empty">
+                No media yet. Use <code>/addmedia</code> to add photos &amp; videos.
             </div>
         </div>
     </section>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <button class="lightbox-close" onclick="closeLightbox()">&#x2715;</button>
+        <img class="lightbox-img" id="lightbox-img" src="" alt="">
+        <video class="lightbox-vid" id="lightbox-vid" controls></video>
+        <div class="lightbox-desc" id="lightbox-desc"></div>
+    </div>
 
     <!-- ═══════════════════════ DIVISIONS ═════════════════════ -->
     <section id="divisions">
@@ -1741,6 +1864,7 @@
                     fetchRealtimeStats();
                     subscribeToGuildStats();
                     subscribeToMemberAvatars();
+                    loadGallery();
                     loadPartners();
                     loadMembers();
                 } else if (attempt < 12) {
@@ -1846,6 +1970,71 @@
                     })
                     .subscribe();
             }
+
+            /* ─── Load Media Gallery from Supabase ────────────────────── */
+            async function loadGallery() {
+                if (!supabase) return;
+                try {
+                    const { data, error } = await supabase
+                        .from('media_gallery')
+                        .select('*')
+                        .order('created_at', { ascending: false });
+
+                    if (error) { console.error('Gallery fetch error:', error.message); return; }
+                    if (!data || data.length === 0) return;
+
+                    const grid = document.getElementById('gallery-grid');
+                    if (!grid) return;
+                    const empty = document.getElementById('gallery-empty');
+                    empty && empty.remove();
+
+                    data.forEach(function(item) {
+                        const div = document.createElement('div');
+                        div.className = 'gallery-item';
+                        const isVid = item.media_type === 'video';
+                        div.innerHTML =
+                            (isVid
+                                ? '<video src="' + item.media_url + '" muted loop playsinline></video>' +
+                                  '<span class="gallery-video-badge">&#9654; VIDEO</span>'
+                                : '<img src="' + item.media_url + '" alt="' + (item.description || '') + '" loading="lazy">')
+                            + '<div class="gallery-overlay"><span class="gallery-overlay-text">' + (item.description || '') + '</span></div>';
+                        div.addEventListener('click', function() {
+                            openLightbox(item.media_url, item.media_type, item.description);
+                        });
+                        grid.appendChild(div);
+                    });
+                } catch (e) {
+                    console.error('Error loading gallery:', e);
+                }
+            }
+
+            function openLightbox(url, type, desc) {
+                const lb    = document.getElementById('lightbox');
+                const img   = document.getElementById('lightbox-img');
+                const vid   = document.getElementById('lightbox-vid');
+                const ldesc = document.getElementById('lightbox-desc');
+                img.classList.remove('active');
+                vid.classList.remove('active');
+                vid.pause && vid.pause();
+                if (type === 'video') {
+                    vid.src = url; vid.classList.add('active');
+                } else {
+                    img.src = url; img.classList.add('active');
+                }
+                ldesc.textContent = desc || '';
+                lb.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeLightbox() {
+                const lb  = document.getElementById('lightbox');
+                const vid = document.getElementById('lightbox-vid');
+                lb.classList.remove('active');
+                vid.pause && vid.pause();
+                vid.src = '';
+                document.body.style.overflow = '';
+            }
+            window.closeLightbox = closeLightbox;
 
             /* ─── Load Partners from Supabase ─────────────────────────── */
             async function loadPartners() {
