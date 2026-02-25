@@ -1,9 +1,1201 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>NMC</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>National Mobility Command | Delivering the Nation</title>
+    <meta name="description"
+        content="National Mobility Command — Elite virtual trucking, precision logistics, and nationwide freight transport. Join the convoy today.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        /* ─── Reset & Base ─────────────────────────────────────── */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --navy: #0a1628;
+            --navy2: #0d1f3c;
+            --gold: #e8a020;
+            --gold2: #ffbf47;
+            --red: #c0392b;
+            --white: #f0f4ff;
+            --muted: #8a9bbf;
+            --card: rgba(255, 255, 255, 0.04);
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--navy);
+            color: var(--white);
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* ─── Scrollbar ─────────────────────────────────────────── */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--navy);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 3px;
+        }
+
+        /* ─── Nav ───────────────────────────────────────────────── */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 60px;
+            height: 72px;
+            background: rgba(10, 22, 40, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            transition: all .3s;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-logo .emblem {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--gold), var(--gold2));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 22px;
+            color: var(--navy);
+            box-shadow: 0 0 20px rgba(232, 160, 32, .4);
+        }
+
+        .nav-logo span {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 22px;
+            letter-spacing: 2px;
+            background: linear-gradient(90deg, var(--white), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 36px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-links a {
+            color: var(--muted);
+            transition: color .2s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gold);
+            border-radius: 2px;
+            transform: scaleX(0);
+            transition: transform .2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--white);
+        }
+
+        .nav-links a:hover::after {
+            transform: scaleX(1);
+        }
+
+        .nav-btn {
+            padding: 10px 24px;
+            background: linear-gradient(135deg, var(--gold), var(--gold2));
+            color: var(--navy);
+            font-weight: 700;
+            font-size: 13px;
+            border-radius: 8px;
+            letter-spacing: .5px;
+            transition: transform .2s, box-shadow .2s;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(232, 160, 32, .4);
+        }
+
+        /* ─── Hero ──────────────────────────────────────────────── */
+        #hero {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            padding: 0 60px;
+        }
+
+        /* Animated road/convoy background */
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(to bottom,
+                    rgba(10, 22, 40, 1) 0%,
+                    rgba(10, 22, 40, 0.3) 40%,
+                    rgba(10, 22, 40, 0.6) 70%,
+                    rgba(10, 22, 40, 1) 100%),
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'%3E%3Cdefs%3E%3ClinearGradient id='sky' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23050d1a'/%3E%3Cstop offset='0.5' stop-color='%23152040'/%3E%3Cstop offset='1' stop-color='%23c0500a'/%3E%3C/linearGradient%3E%3ClinearGradient id='road' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23111'/%3E%3Cstop offset='1' stop-color='%23222'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='800' height='600' fill='url(%23sky)'/%3E%3Crect y='380' width='800' height='220' fill='url(%23road)'/%3E%3Cline x1='400' y1='380' x2='400' y2='600' stroke='%23e8a020' stroke-width='2' stroke-dasharray='30 20' opacity='.4'/%3E%3Cellipse cx='400' cy='370' rx='400' ry='30' fill='%230a1628'/%3E%3Ccircle cx='120' cy='280' r='3' fill='%23ffbf47' opacity='.6'/%3E%3Ccircle cx='680' cy='250' r='2' fill='%23ffbf47' opacity='.4'/%3E%3Ccircle cx='350' cy='200' r='1.5' fill='%23ffbf47' opacity='.5'/%3E%3C/svg%3E") center/cover no-repeat;
+        }
+
+        /* Stars */
+        .stars {
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(1px 1px at 20% 15%, rgba(255, 255, 255, .6) 0%, transparent 100%),
+                radial-gradient(1px 1px at 75% 10%, rgba(255, 255, 255, .5) 0%, transparent 100%),
+                radial-gradient(1px 1px at 50% 25%, rgba(255, 255, 255, .4) 0%, transparent 100%),
+                radial-gradient(1px 1px at 10% 40%, rgba(255, 255, 255, .3) 0%, transparent 100%),
+                radial-gradient(1px 1px at 90% 35%, rgba(255, 255, 255, .5) 0%, transparent 100%),
+                radial-gradient(1px 1px at 35% 8%, rgba(255, 191, 71, .7) 0%, transparent 100%),
+                radial-gradient(1px 1px at 62% 18%, rgba(255, 255, 255, .4) 0%, transparent 100%);
+        }
+
+        /* Animated glow line (road) */
+        .road-glow {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            background: linear-gradient(to top, rgba(232, 160, 32, 0.06), transparent);
+            pointer-events: none;
+        }
+
+        /* Moving headlights */
+        @keyframes headlight {
+            0% {
+                transform: translateX(-200px);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateX(110vw);
+                opacity: 0;
+            }
+        }
+
+        .light-beam {
+            position: absolute;
+            bottom: 28%;
+            width: 300px;
+            height: 80px;
+            background: linear-gradient(90deg, transparent, rgba(255, 220, 100, 0.25), rgba(255, 220, 100, 0.08), transparent);
+            border-radius: 50%;
+            animation: headlight 8s linear infinite;
+            pointer-events: none;
+        }
+
+        .light-beam:nth-child(2) {
+            animation-delay: 3s;
+            bottom: 32%;
+            height: 60px;
+        }
+
+        .light-beam:nth-child(3) {
+            animation-delay: 5.5s;
+            bottom: 25%;
+            height: 90px;
+            width: 350px;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 700px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: rgba(232, 160, 32, 0.12);
+            border: 1px solid rgba(232, 160, 32, 0.3);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: var(--gold);
+            text-transform: uppercase;
+            margin-bottom: 28px;
+        }
+
+        .hero-badge .dot {
+            width: 6px;
+            height: 6px;
+            background: var(--gold);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(56px, 8vw, 102px);
+            line-height: .95;
+            letter-spacing: 2px;
+            margin-bottom: 24px;
+            color: var(--white);
+        }
+
+        h1 .highlight {
+            background: linear-gradient(90deg, var(--gold), var(--gold2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-sub {
+            font-size: 17px;
+            color: var(--muted);
+            line-height: 1.7;
+            margin-bottom: 40px;
+            max-width: 520px;
+            font-weight: 400;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            padding: 16px 36px;
+            background: linear-gradient(135deg, var(--gold), var(--gold2));
+            color: var(--navy);
+            font-weight: 700;
+            font-size: 15px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            transition: transform .2s, box-shadow .2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(232, 160, 32, .45);
+        }
+
+        .btn-secondary {
+            padding: 16px 36px;
+            background: transparent;
+            color: var(--white);
+            font-weight: 600;
+            font-size: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all .2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: rgba(232, 160, 32, .05);
+        }
+
+        /* Hero stats */
+        .hero-stats {
+            position: absolute;
+            right: 60px;
+            bottom: 14%;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px 28px;
+            backdrop-filter: blur(20px);
+            text-align: center;
+            transition: transform .3s, border-color .3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(232, 160, 32, .3);
+        }
+
+        .stat-num {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 40px;
+            color: var(--gold);
+            line-height: 1;
+        }
+
+        .stat-lbl {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 4px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* ─── Section Common ─────────────────────────────────────── */
+        section {
+            padding: 100px 60px;
+        }
+
+        .section-tag {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(38px, 5vw, 64px);
+            letter-spacing: 1px;
+            line-height: 1;
+            margin-bottom: 20px;
+        }
+
+        .section-sub {
+            font-size: 16px;
+            color: var(--muted);
+            line-height: 1.8;
+            max-width: 540px;
+            margin-bottom: 60px;
+        }
+
+        /* ─── About ─────────────────────────────────────────────── */
+        #about {
+            background: var(--navy2);
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .about-visual {
+            position: relative;
+            border-radius: 24px;
+            overflow: hidden;
+            aspect-ratio: 4/3;
+            background: linear-gradient(135deg, #0d1f3c, #152040);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Truck SVG illustration */
+        .truck-icon-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .truck-svg {
+            width: 220px;
+            filter: drop-shadow(0 0 40px rgba(232, 160, 32, .3));
+        }
+
+        .about-visual-label {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 13px;
+            letter-spacing: 4px;
+            color: var(--gold);
+            opacity: .7;
+        }
+
+        /* Glow overlay */
+        .about-visual::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(to top, rgba(232, 160, 32, 0.08), transparent);
+        }
+
+        .about-features {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .feat-item {
+            display: flex;
+            gap: 18px;
+            align-items: flex-start;
+            padding: 20px;
+            border-radius: 14px;
+            border: 1px solid transparent;
+            transition: all .3s;
+        }
+
+        .feat-item:hover {
+            background: var(--card);
+            border-color: var(--border);
+        }
+
+        .feat-icon {
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            background: rgba(232, 160, 32, 0.12);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .feat-title {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 6px;
+        }
+
+        .feat-desc {
+            font-size: 14px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        /* ─── Services ──────────────────────────────────────────── */
+        #services {
+            background: var(--navy);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .service-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 36px 30px;
+            position: relative;
+            overflow: hidden;
+            transition: all .35s;
+            cursor: default;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold), var(--gold2));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform .35s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(232, 160, 32, .25);
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-emoji {
+            font-size: 38px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .service-name {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 26px;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .service-desc {
+            font-size: 14px;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        /* ─── Fleet ─────────────────────────────────────────────── */
+        #fleet {
+            background: var(--navy2);
+        }
+
+        .fleet-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .fleet-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px 20px;
+            text-align: center;
+            transition: all .3s;
+        }
+
+        .fleet-card:hover {
+            border-color: rgba(232, 160, 32, .35);
+            transform: scale(1.03);
+        }
+
+        .fleet-truck-icon {
+            font-size: 48px;
+            margin-bottom: 14px;
+            filter: drop-shadow(0 4px 12px rgba(232, 160, 32, .25));
+        }
+
+        .fleet-name {
+            font-weight: 700;
+            font-size: 15px;
+            margin-bottom: 6px;
+        }
+
+        .fleet-tag {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: rgba(232, 160, 32, .12);
+            color: var(--gold);
+            letter-spacing: 1px;
+        }
+
+        /* ─── Recruitment / CTA ──────────────────────────────────── */
+        #join {
+            background: var(--navy);
+            text-align: center;
+        }
+
+        .join-wrapper {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .join-card {
+            background: linear-gradient(135deg, rgba(232, 160, 32, 0.08), rgba(232, 160, 32, 0.02));
+            border: 1px solid rgba(232, 160, 32, .25);
+            border-radius: 28px;
+            padding: 70px 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .join-card::after {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(232, 160, 32, .15), transparent 70%);
+            pointer-events: none;
+        }
+
+        .join-card h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(40px, 6vw, 72px);
+            line-height: .95;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .join-card p {
+            font-size: 16px;
+            color: var(--muted);
+            margin-bottom: 36px;
+            line-height: 1.7;
+        }
+
+        .requirements {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .req-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        .req-item .check {
+            color: var(--gold);
+            font-size: 16px;
+        }
+
+        /* ─── Stats Banner ───────────────────────────────────────── */
+        #stats {
+            background: linear-gradient(135deg, var(--navy2), var(--navy));
+            padding: 60px;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+
+        .stat-big {
+            text-align: center;
+        }
+
+        .stat-big .num {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 72px;
+            line-height: 1;
+            background: linear-gradient(90deg, var(--gold), var(--gold2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-big .lbl {
+            font-size: 14px;
+            color: var(--muted);
+            margin-top: 8px;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        /* ─── Footer ─────────────────────────────────────────────── */
+        footer {
+            background: rgba(0, 0, 0, .4);
+            border-top: 1px solid var(--border);
+            padding: 40px 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-logo span {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 18px;
+            letter-spacing: 2px;
+            color: var(--muted);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .footer-links a:hover {
+            color: var(--gold);
+        }
+
+        .footer-copy {
+            font-size: 13px;
+            color: rgba(138, 155, 191, .5);
+        }
+
+        /* ─── Reveal animations ──────────────────────────────────── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity .7s ease, transform .7s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-delay-1 {
+            transition-delay: .1s;
+        }
+
+        .reveal-delay-2 {
+            transition-delay: .2s;
+        }
+
+        .reveal-delay-3 {
+            transition-delay: .3s;
+        }
+
+        /* ─── Responsive ─────────────────────────────────────────── */
+        @media (max-width: 1100px) {
+            .hero-stats {
+                display: none;
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .fleet-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 700px) {
+            nav {
+                padding: 0 24px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            section {
+                padding: 70px 24px;
+            }
+
+            #hero {
+                padding: 0 24px;
+            }
+
+            .services-grid,
+            .fleet-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .join-card {
+                padding: 40px 24px;
+            }
+
+            footer {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <h1>My Page</h1>
+
+    <!-- ═══════════════════════ NAV ═══════════════════════════ -->
+    <nav>
+        <div class="nav-logo">
+            <img src="Assets/NMC_logo.png" alt="NMC Logo"
+                style="width: 42px; height: 42px; object-fit: contain; filter: drop-shadow(0 0 10px rgba(232, 160, 32, 0.4));">
+            <span>National Mobility Command</span>
+        </div>
+        <div class="nav-links">
+            <a href="#about">About</a>
+            <a href="#services">Services</a>
+            <a href="#fleet">Fleet</a>
+            <a href="#stats">Stats</a>
+            <a href="#join">Join Us</a>
+        </div>
+        <a href="#join" class="nav-btn">Enlist Now</a>
+    </nav>
+
+    <!-- ═══════════════════════ HERO ══════════════════════════ -->
+    <section id="hero">
+        <div class="hero-bg"></div>
+        <div class="stars"></div>
+        <div class="road-glow"></div>
+        <div class="light-beam"></div>
+        <div class="light-beam"></div>
+        <div class="light-beam"></div>
+
+        <div class="hero-content">
+            <div class="hero-badge">
+                <div class="dot"></div>
+                Now Recruiting · Drivers Wanted
+            </div>
+            <h1>
+                NATIONAL<br>
+                <span class="highlight">MOBILITY</span><br>
+                COMMAND
+            </h1>
+            <p class="hero-sub">
+                Elite virtual trucking. Precision logistics across the nation.
+                Where every mile counts and every driver is a professional.
+            </p>
+            <div class="hero-actions">
+                <a href="#join" class="btn-primary">
+                    🚛 Join the Convoy
+                </a>
+                <a href="#about" class="btn-secondary">
+                    Learn More →
+                </a>
+            </div>
+        </div>
+
+        <div class="hero-stats">
+            <div class="stat-card">
+                <div class="stat-num">500+</div>
+                <div class="stat-lbl">Active Drivers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num">1M+</div>
+                <div class="stat-lbl">Miles Hauled</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num">100%</div>
+                <div class="stat-lbl">Commitment</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════ ABOUT ═════════════════════════ -->
+    <section id="about">
+        <div class="about-grid">
+            <div class="about-visual reveal">
+                <div class="truck-icon-wrap">
+                    <!-- Inline truck SVG -->
+                    <svg class="truck-svg" viewBox="0 0 280 140" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Trailer -->
+                        <rect x="10" y="40" width="170" height="70" rx="8" fill="#1a2d52" stroke="#e8a020"
+                            stroke-width="1.5" />
+                        <!-- Cabin -->
+                        <rect x="180" y="50" width="80" height="60" rx="8" fill="#0d1f3c" stroke="#e8a020"
+                            stroke-width="1.5" />
+                        <!-- Windshield -->
+                        <rect x="220" y="56" width="34" height="28" rx="4" fill="#ffd770" opacity=".15" stroke="#e8a020"
+                            stroke-width="1" />
+                        <!-- Light bar -->
+                        <rect x="180" y="50" width="80" height="6" rx="3" fill="#e8a020" opacity=".6" />
+                        <!-- NMC text on trailer -->
+                        <text x="60" y="82" font-family="'Bebas Neue',sans-serif" font-size="28" fill="#e8a020"
+                            opacity=".8" letter-spacing="4">NMC</text>
+                        <!-- Stripe -->
+                        <rect x="10" y="95" width="170" height="5" rx="2" fill="#e8a020" opacity=".4" />
+                        <!-- Wheels -->
+                        <circle cx="50" cy="116" r="14" fill="#0a1628" stroke="#e8a020" stroke-width="2" />
+                        <circle cx="50" cy="116" r="6" fill="#e8a020" opacity=".5" />
+                        <circle cx="120" cy="116" r="14" fill="#0a1628" stroke="#e8a020" stroke-width="2" />
+                        <circle cx="120" cy="116" r="6" fill="#e8a020" opacity=".5" />
+                        <circle cx="220" cy="116" r="14" fill="#0a1628" stroke="#e8a020" stroke-width="2" />
+                        <circle cx="220" cy="116" r="6" fill="#e8a020" opacity=".5" />
+                        <!-- Headlights -->
+                        <rect x="257" y="70" width="12" height="8" rx="2" fill="#ffd770" opacity=".8" />
+                        <rect x="257" y="84" width="12" height="5" rx="2" fill="#ff6b47" opacity=".6" />
+                    </svg>
+                    <div class="about-visual-label">Fleet Unit · Alpha Division</div>
+                </div>
+            </div>
+
+            <div>
+                <div class="section-tag reveal">Who We Are</div>
+                <h2 class="section-title reveal">Built for the<br><span style="color:var(--gold)">Open Road</span></h2>
+                <p class="section-sub reveal">
+                    National Mobility Command is a premier virtual trucking company delivering freight
+                    with discipline, precision, and a deep respect for the craft of the road.
+                </p>
+
+                <div class="about-features">
+                    <div class="feat-item reveal reveal-delay-1">
+                        <div class="feat-icon">🎖️</div>
+                        <div>
+                            <div class="feat-title">Military-Grade Discipline</div>
+                            <div class="feat-desc">Every driver operates to the highest professional standards. On-time
+                                pickups, safe delivery, zero excuses.</div>
+                        </div>
+                    </div>
+                    <div class="feat-item reveal reveal-delay-2">
+                        <div class="feat-icon">🗺️</div>
+                        <div>
+                            <div class="feat-title">Nationwide Coverage</div>
+                            <div class="feat-desc">From coast to coast — we haul every load, across every map, in every
+                                weather condition.</div>
+                        </div>
+                    </div>
+                    <div class="feat-item reveal reveal-delay-3">
+                        <div class="feat-icon">🤝</div>
+                        <div>
+                            <div class="feat-title">Brotherhood of the Road</div>
+                            <div class="feat-desc">A tight-knit community where drivers look out for each other. Convoy
+                                events, mentorship, shared progress.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════ SERVICES ══════════════════════ -->
+    <section id="services">
+        <div class="section-tag reveal">What We Do</div>
+        <h2 class="section-title reveal">Our Operations</h2>
+        <p class="section-sub reveal">From general freight to specialized cargo — NMC handles it all with precision and
+            professionalism.</p>
+
+        <div class="services-grid">
+            <div class="service-card reveal reveal-delay-1">
+                <span class="service-emoji">🚛</span>
+                <div class="service-name">General Freight</div>
+                <div class="service-desc">Standard hauls across all routes and distances. No load too small, no route
+                    too long for our experienced drivers.</div>
+            </div>
+            <div class="service-card reveal reveal-delay-2">
+                <span class="service-emoji">⚠️</span>
+                <div class="service-name">Oversized Loads</div>
+                <div class="service-desc">Heavy machinery, wide loads, and special transport requiring coordinated
+                    convoy operations and expert maneuvering.</div>
+            </div>
+            <div class="service-card reveal reveal-delay-3">
+                <span class="service-emoji">❄️</span>
+                <div class="service-name">Temperature Control</div>
+                <div class="service-desc">Perishable and sensitive cargo transported under precise climate conditions
+                    with refrigerated trailers.</div>
+            </div>
+            <div class="service-card reveal reveal-delay-1">
+                <span class="service-emoji">⛽</span>
+                <div class="service-name">Tanker Operations</div>
+                <div class="service-desc">Liquid and fuel hauling with specialized tanker rigs, following strict safety
+                    and handling protocols.</div>
+            </div>
+            <div class="service-card reveal reveal-delay-2">
+                <span class="service-emoji">📦</span>
+                <div class="service-name">Express Delivery</div>
+                <div class="service-desc">Time-sensitive shipments handled with urgency. Priority routing, maximum
+                    speed, guaranteed on-time arrival.</div>
+            </div>
+            <div class="service-card reveal reveal-delay-3">
+                <span class="service-emoji">🚨</span>
+                <div class="service-name">Convoy Escort</div>
+                <div class="service-desc">Organized multi-unit convoys for special events, community runs, and
+                    high-visibility freight operations.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════ FLEET ═════════════════════════ -->
+    <section id="fleet">
+        <div class="section-tag reveal">Our Vehicles</div>
+        <h2 class="section-title reveal">The Fleet</h2>
+        <p class="section-sub reveal">Every rig in the National Mobility Command fleet is maintained to peak condition
+            and assigned to the right job.</p>
+
+        <div class="fleet-grid">
+            <div class="fleet-card reveal reveal-delay-1">
+                <img src="Assets/.truckgallery/nmc_orangenavy_standard.png" alt="Class 8 Semi"
+                    style="width: 100%; height: 120px; object-fit: contain; margin-bottom: 14px; filter: drop-shadow(0 4px 12px rgba(232, 160, 32, .25));">
+                <div class="fleet-name">Class 8 Semi</div>
+                <div class="fleet-tag">Standard</div>
+            </div>
+            <div class="fleet-card reveal reveal-delay-2">
+                <img src="Assets/.truckgallery/nmc_silvergrey_daf_trailer.png" alt="Tanker Rig"
+                    style="width: 100%; height: 120px; object-fit: contain; margin-bottom: 14px; filter: drop-shadow(0 4px 12px rgba(232, 160, 32, .25));">
+                <div class="fleet-name">Tanker Rig</div>
+                <div class="fleet-tag">Liquid Haul</div>
+            </div>
+            <div class="fleet-card reveal reveal-delay-3">
+                <img src="Assets/.truckgallery/nmc_silvergrey_scania_trailer.png" alt="Lowboy Trailer"
+                    style="width: 100%; height: 120px; object-fit: contain; margin-bottom: 14px; filter: drop-shadow(0 4px 12px rgba(232, 160, 32, .25));">
+                <div class="fleet-name">Lowboy Trailer</div>
+                <div class="fleet-tag">Oversized</div>
+            </div>
+            <div class="fleet-card reveal">
+                <img src="Assets/.truckgallery/nmc_orangenavy_renault.png" alt="Reefer Unit"
+                    style="width: 100%; height: 120px; object-fit: contain; margin-bottom: 14px; filter: drop-shadow(0 4px 12px rgba(232, 160, 32, .25));">
+                <div class="fleet-name">Reefer Unit</div>
+                <div class="fleet-tag">Refrigerated</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════ STATS ═════════════════════════ -->
+    <section id="stats">
+        <div class="stats-row">
+            <div class="stat-big reveal">
+                <div class="num">500+</div>
+                <div class="lbl">Active Drivers</div>
+            </div>
+            <div class="stat-big reveal reveal-delay-1">
+                <div class="num">1M+</div>
+                <div class="lbl">Miles Delivered</div>
+            </div>
+            <div class="stat-big reveal reveal-delay-2">
+                <div class="num">48</div>
+                <div class="lbl">States Covered</div>
+            </div>
+            <div class="stat-big reveal reveal-delay-3">
+                <div class="num">99%</div>
+                <div class="lbl">On-Time Rate</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════ JOIN ══════════════════════════ -->
+    <section id="join">
+        <div class="join-wrapper">
+            <div class="join-card reveal">
+                <div class="section-tag">Recruitment Open</div>
+                <h2>JOIN THE<br><span style="color:var(--gold)">COMMAND</span></h2>
+                <p>We're always looking for dedicated virtual drivers ready to commit to the mission. Whether you're a
+                    rookie or a veteran hauler — there's a seat in the NMC for you.</p>
+                <div class="requirements">
+                    <div class="req-item"><span class="check">✔</span> Any experience level</div>
+                    <div class="req-item"><span class="check">✔</span> Trucking sim game</div>
+                    <div class="req-item"><span class="check">✔</span> Active & dedicated</div>
+                    <div class="req-item"><span class="check">✔</span> Team player</div>
+                </div>
+                <a href="#" class="btn-primary" style="font-size:16px; padding:18px 48px;">
+                    🚛 Apply Now — It's Free
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════ FOOTER ════════════════════════ -->
+    <footer>
+        <div class="footer-logo">
+            <img src="Assets/NMC_logo.png" alt="NMC Logo" style="width: 34px; height: 34px; object-fit: contain;">
+            <span>National Mobility Command</span>
+        </div>
+        <div class="footer-links">
+            <a href="#about">About</a>
+            <a href="#services">Services</a>
+            <a href="#fleet">Fleet</a>
+            <a href="#join">Join</a>
+        </div>
+        <div class="footer-copy">© 2026 National Mobility Command. All rights reserved.</div>
+    </footer>
+
+    <script>
+        // ─── Scroll Reveal ────────────────────────────────────────
+        const revealEls = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) { e.target.classList.add('visible'); }
+            });
+        }, { threshold: 0.12 });
+        revealEls.forEach(el => observer.observe(el));
+
+        // ─── Nav shrink on scroll ─────────────────────────────────
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            nav.style.height = window.scrollY > 60 ? '58px' : '72px';
+        });
+
+        // ─── Counter animation ────────────────────────────────────
+        function animateCount(el, target, suffix = '') {
+            let current = 0;
+            const inc = target / 60;
+            const timer = setInterval(() => {
+                current = Math.min(current + inc, target);
+                el.textContent = (target >= 1000000
+                    ? (current / 1000000).toFixed(1) + 'M'
+                    : Math.floor(current)) + suffix;
+                if (current >= target) clearInterval(timer);
+            }, 24);
+        }
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (!e.isIntersecting) return;
+                const nums = e.target.querySelectorAll('.num');
+                const raw = [500, 1000000, 48, 99];
+                const sfx = ['+', '+', '', '%'];
+                nums.forEach((n, i) => animateCount(n, raw[i], sfx[i]));
+                statsObserver.unobserve(e.target);
+            });
+        }, { threshold: 0.3 });
+        const statsSection = document.getElementById('stats');
+        if (statsSection) statsObserver.observe(statsSection);
+    </script>
 </body>
+
 </html>
