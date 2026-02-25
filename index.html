@@ -1283,6 +1283,28 @@
         </div>
     </section>
 
+    <!-- ═══════════════════════ PARTNERS ════════════════════════ -->
+    <section id="partners" style="background: var(--navy);">
+        <div class="section-tag reveal">Trusted Partners</div>
+        <h2 class="section-title reveal">Our Partners</h2>
+        <p class="section-sub reveal">We collaborate with the finest virtual trucking communities and logistics
+            organizations across the network.</p>
+        <div class="partners-grid">
+            <div class="partner-card reveal reveal-delay-1">
+                <div class="partner-logo">PARTNER</div>
+                <div class="division-title">Coming Soon</div>
+                <div class="division-desc">Partnership details will be announced shortly. Stay tuned for exciting
+                    collaborations.</div>
+            </div>
+            <div class="partner-card reveal reveal-delay-2">
+                <div class="partner-logo">PARTNER</div>
+                <div class="division-title">Coming Soon</div>
+                <div class="division-desc">We are actively reaching out to partner organizations. Announcements coming
+                    soon.</div>
+            </div>
+        </div>
+    </section>
+
     <!-- ═══════════════════════ STATS ═════════════════════════ -->
     <section id="stats">
         <div class="stats-row" style="row-gap: 60px;">
@@ -1416,154 +1438,171 @@
         </div>
     </div>
 
-    <!-- Supabase JS CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Supabase JS CDN — async so it never blocks page rendering -->
+    <script async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        /* ─── Modal Logic ────────────────────────────────────────── */
-        function openEnlistModal() {
-            document.getElementById('enlistModal').classList.add('active');
-            document.body.style.overflow = 'hidden'; // Prevent scrolling
-        }
+        /* ─── All setup runs after DOM is fully loaded ───────────── */
+        document.addEventListener('DOMContentLoaded', function () {
 
-        function closeEnlistModal() {
-            document.getElementById('enlistModal').classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        function submitApplication(e) {
-            e.preventDefault();
-            // In a real scenario, you could send the form data via webhook or Supabase here.
-            // Requirement specifies redirecting the user to discord.
-            window.location.href = "https://discord.gg/qwRUQ6msT8";
-        }
-
-        // Close on escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeEnlistModal();
-        });
-
-        // Close on clicking outside modal
-        document.getElementById('enlistModal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('enlistModal')) closeEnlistModal();
-        });
-
-        /* ─── Supabase Integration ───────────────────────────────── */
-        // Environment details from D:\.worker\.env
-        const SUPABASE_URL = 'https://aijrvldtilncnclvvles.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpanJ2bGR0aWxuY25jbHZ2bGVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1MDQ2MjgsImV4cCI6MjA4MTA4MDYyOH0.ASKDuChVVlCzW7cnfUJQ2TbPUx90HPKZ60c6o7-s_AM';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        async function fetchRealtimeStats() {
-            try {
-                // 1. Fetch Active Drivers (count rows in player_stats)
-                const { count: driverCount, error: countErr } = await supabase
-                    .from('player_stats')
-                    .select('*', { count: 'exact', head: true });
-
-                // 2. Fetch sum of total_distance_km and total_time_minutes
-                // Note: Supabase JS client doesn't do sum across all rows out of the box unless via rpc.
-                // We'll fetch all rows to calculate sum since it's client side, or if large, ideally use a view/rpc.
-                // Assuming a reasonable number of players for now.
-                const { data: statsData, error: statsErr } = await supabase
-                    .from('player_stats')
-                    .select('total_distance_km, total_time_minutes');
-
-                let totalDistance = 0;
-                let totalTimeMins = 0;
-                if (statsData) {
-                    statsData.forEach(s => {
-                        totalDistance += (s.total_distance_km || 0);
-                        totalTimeMins += (s.total_time_minutes || 0);
-                    });
-                }
-
-                // Driving Time in Hours
-                const totalHours = Math.floor(totalTimeMins / 60);
-
-                // 3. Fetch Net Worth (sum of total_income from player_stats)
-                // Assuming total_income represents current balance or total earned.
-                const { data: incomeData, error: incomeErr } = await supabase
-                    .from('player_stats')
-                    .select('total_income');
-
-                let netWorth = 0;
-                if (incomeData) {
-                    incomeData.forEach(i => {
-                        netWorth += (i.total_income || 0);
-                    });
-                }
-
-                // 4. Note on Enlisted Count:
-                // Frontend cannot ping discord API securely.
-                // We will default 'Enlisted Drivers' to driverCount until a 'server_stats' or discord syncing mechanism is in place.
-                // In your discord bot guildMemberRoleAdd event, you should update a 'server_stats' table to get precise enlisted role numbers.
-
-                // Animate stats once fetched
-                animateRealValue('stat-active-drivers', driverCount || 0, '');
-                animateRealValue('hero-stat-drivers', driverCount || 0, '+');
-
-                animateRealValue('stat-enlisted', driverCount || 0, '+'); // Temporary approximation
-
-                animateRealValue('stat-miles', totalDistance || 0, ' km');
-                animateRealValue('hero-stat-miles', totalDistance || 0, ' km');
-
-                animateRealValue('stat-driving-time', totalHours || 0, ' h');
-
-                animateRealValue('stat-net-worth', netWorth || 0, '$', true);
-
-            } catch (e) {
-                console.error("Error fetching realtime stats:", e);
+            /* ─── Modal Logic ────────────────────────────────────────── */
+            function openEnlistModal() {
+                document.getElementById('enlistModal').classList.add('active');
+                document.body.style.overflow = 'hidden';
             }
-        }
+            window.openEnlistModal = openEnlistModal;
 
-        // Custom animation function for realtime format
-        function animateRealValue(elementId, target, suffix = '', isCurrency = false) {
-            const el = document.getElementById(elementId);
-            if (!el) return;
-
-            let current = 0;
-            const steps = 60;
-            const inc = target / steps;
-
-            if (target === 0) {
-                el.textContent = isCurrency ? `$0` : `0${suffix}`;
-                return;
+            function closeEnlistModal() {
+                document.getElementById('enlistModal').classList.remove('active');
+                document.body.style.overflow = '';
             }
+            window.closeEnlistModal = closeEnlistModal;
 
-            const timer = setInterval(() => {
-                current = Math.min(current + inc, target);
+            function submitApplication(e) {
+                e.preventDefault();
+                window.location.href = "https://discord.gg/qwRUQ6msT8";
+            }
+            window.submitApplication = submitApplication;
 
-                let displayVal = "";
-                if (isCurrency) {
-                    displayVal = "$" + Math.floor(current).toLocaleString();
-                } else if (target >= 10000) {
-                    displayVal = (current / 1000).toFixed(1) + 'K';
-                } else {
-                    displayVal = Math.floor(current).toLocaleString();
-                }
-
-                el.textContent = displayVal + suffix;
-                if (current >= target) clearInterval(timer);
-            }, 30);
-        }
-
-        // Initialize fetching
-        fetchRealtimeStats();
-
-        // ─── Scroll Reveal ────────────────────────────────────────
-        const revealEls = document.querySelectorAll('.reveal');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(e => {
-                if (e.isIntersecting) { e.target.classList.add('visible'); }
+            // Close on escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeEnlistModal();
             });
-        }, { threshold: 0.12 });
-        revealEls.forEach(el => observer.observe(el));
 
-        // ─── Nav shrink on scroll ─────────────────────────────────
-        window.addEventListener('scroll', () => {
-            const nav = document.querySelector('nav');
-            nav.style.height = window.scrollY > 60 ? '58px' : '72px';
-        });
+            // Close on clicking outside modal
+            document.getElementById('enlistModal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('enlistModal')) closeEnlistModal();
+            });
+
+            /* ─── Supabase Integration ───────────────────────────────── */
+            const SUPABASE_URL = 'https://aijrvldtilncnclvvles.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpanJ2bGR0aWxuY25jbHZ2bGVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1MDQ2MjgsImV4cCI6MjA4MTA4MDYyOH0.ASKDuChVVlCzW7cnfUJQ2TbPUx90HPKZ60c6o7-s_AM';
+            /* Guard: only init Supabase if CDN loaded (it is async so may not be ready yet) */
+            let supabase = null;
+            if (window.supabase) {
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            }
+
+            async function fetchRealtimeStats() {
+                try {
+                    // 1. Fetch Active Drivers (count rows in player_stats)
+                    const { count: driverCount, error: countErr } = await supabase
+                        .from('player_stats')
+                        .select('*', { count: 'exact', head: true });
+
+                    // 2. Fetch sum of total_distance_km and total_time_minutes
+                    // Note: Supabase JS client doesn't do sum across all rows out of the box unless via rpc.
+                    // We'll fetch all rows to calculate sum since it's client side, or if large, ideally use a view/rpc.
+                    // Assuming a reasonable number of players for now.
+                    const { data: statsData, error: statsErr } = await supabase
+                        .from('player_stats')
+                        .select('total_distance_km, total_time_minutes');
+
+                    let totalDistance = 0;
+                    let totalTimeMins = 0;
+                    if (statsData) {
+                        statsData.forEach(s => {
+                            totalDistance += (s.total_distance_km || 0);
+                            totalTimeMins += (s.total_time_minutes || 0);
+                        });
+                    }
+
+                    // Driving Time in Hours
+                    const totalHours = Math.floor(totalTimeMins / 60);
+
+                    // 3. Fetch Net Worth (sum of total_income from player_stats)
+                    // Assuming total_income represents current balance or total earned.
+                    const { data: incomeData, error: incomeErr } = await supabase
+                        .from('player_stats')
+                        .select('total_income');
+
+                    let netWorth = 0;
+                    if (incomeData) {
+                        incomeData.forEach(i => {
+                            netWorth += (i.total_income || 0);
+                        });
+                    }
+
+                    // 4. Note on Enlisted Count:
+                    // Frontend cannot ping discord API securely.
+                    // We will default 'Enlisted Drivers' to driverCount until a 'server_stats' or discord syncing mechanism is in place.
+                    // In your discord bot guildMemberRoleAdd event, you should update a 'server_stats' table to get precise enlisted role numbers.
+
+                    // Animate stats once fetched
+                    animateRealValue('stat-active-drivers', driverCount || 0, '');
+                    animateRealValue('hero-stat-drivers', driverCount || 0, '+');
+
+                    animateRealValue('stat-enlisted', driverCount || 0, '+'); // Temporary approximation
+
+                    animateRealValue('stat-miles', totalDistance || 0, ' km');
+                    animateRealValue('hero-stat-miles', totalDistance || 0, ' km');
+
+                    animateRealValue('stat-driving-time', totalHours || 0, ' h');
+
+                    animateRealValue('stat-net-worth', netWorth || 0, '$', true);
+
+                } catch (e) {
+                    console.error("Error fetching realtime stats:", e);
+                }
+            }
+
+            // Custom animation function for realtime format
+            function animateRealValue(elementId, target, suffix = '', isCurrency = false) {
+                const el = document.getElementById(elementId);
+                if (!el) return;
+
+                let current = 0;
+                const steps = 60;
+                const inc = target / steps;
+
+                if (target === 0) {
+                    el.textContent = isCurrency ? `$0` : `0${suffix}`;
+                    return;
+                }
+
+                const timer = setInterval(() => {
+                    current = Math.min(current + inc, target);
+
+                    let displayVal = "";
+                    if (isCurrency) {
+                        displayVal = "$" + Math.floor(current).toLocaleString();
+                    } else if (target >= 10000) {
+                        displayVal = (current / 1000).toFixed(1) + 'K';
+                    } else {
+                        displayVal = Math.floor(current).toLocaleString();
+                    }
+
+                    el.textContent = displayVal + suffix;
+                    if (current >= target) clearInterval(timer);
+                }, 30);
+            }
+
+            // Initialize stat fetching only if Supabase loaded
+            if (supabase) fetchRealtimeStats();
+
+            // ─── Scroll Reveal ────────────────────────────────────────
+            const revealEls = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) { e.target.classList.add('visible'); }
+                });
+            }, { threshold: 0.12 });
+            revealEls.forEach(el => observer.observe(el));
+
+            // Immediately reveal any elements already in the viewport on page load
+            revealEls.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    el.classList.add('visible');
+                }
+            });
+
+            // ─── Nav shrink on scroll ─────────────────────────────────
+            window.addEventListener('scroll', () => {
+                const nav = document.querySelector('nav');
+                nav.style.height = window.scrollY > 60 ? '58px' : '72px';
+            });
+
+        }); // end DOMContentLoaded
 
     </script>
 </body>
