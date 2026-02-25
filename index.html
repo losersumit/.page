@@ -1902,15 +1902,14 @@
                     const driversEmpty = document.getElementById('drivers-empty');
 
                     const officers = data.filter(m => m.section === 'officer');
-                    const drivers = data.filter(m => m.section === 'driver');
 
                     if (officers.length > 0 && officersGrid) {
                         officersEmpty && officersEmpty.remove();
-                        officers.forEach(m => officersGrid.appendChild(buildMemberCard(m)));
-                    }
-                    if (drivers.length > 0 && driversGrid) {
-                        driversEmpty && driversEmpty.remove();
-                        drivers.forEach(m => driversGrid.appendChild(buildMemberCard(m)));
+                        officers.forEach(m => {
+                            const card = buildMemberCard(m);
+                            officersGrid.appendChild(card);
+                            observer.observe(card);
+                        });
                     }
                 } catch (e) {
                     console.error('Error loading members:', e);
