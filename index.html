@@ -1036,7 +1036,7 @@
         /* ─── Dynamic Partner Cards ──────────────────────────── */
         .partner-card {
             position: relative;
-            border: 1px solid rgba(232,160,32,.18);
+            border: 1px solid rgba(232, 160, 32, .18);
             border-radius: 16px;
             overflow: hidden;
             min-height: 240px;
@@ -1047,38 +1047,64 @@
             background: var(--surface);
             transition: transform .3s, box-shadow .3s;
         }
-        .partner-card:hover { transform: translateY(-4px); box-shadow: 0 20px 50px rgba(0,0,0,.5); }
+
+        .partner-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, .5);
+        }
 
         .partner-bg {
-            position: absolute; inset: 0;
-            background-size: cover; background-position: center;
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
             filter: brightness(.35);
             transition: filter .4s;
         }
-        .partner-card:hover .partner-bg { filter: brightness(.5); }
+
+        .partner-card:hover .partner-bg {
+            filter: brightness(.5);
+        }
 
         .partner-logo-box {
-            position: absolute; top: 20px; left: 20px;
-            width: 72px; height: 72px;
-            background: rgba(10,22,40,.75);
-            border: 1px dashed rgba(232,160,32,.35);
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 72px;
+            height: 72px;
+            background: rgba(10, 22, 40, .75);
+            border: 1px dashed rgba(232, 160, 32, .35);
             border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 10px; letter-spacing: 1px; color: var(--muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            letter-spacing: 1px;
+            color: var(--muted);
             overflow: hidden;
         }
-        .partner-logo-box img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
+
+        .partner-logo-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+        }
 
         .partner-name {
             position: relative;
-            font-size: 22px; font-weight: 800;
-            color: var(--gold); letter-spacing: 1px;
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--gold);
+            letter-spacing: 1px;
             text-transform: uppercase;
             margin-bottom: 6px;
         }
+
         .partner-desc {
             position: relative;
-            font-size: 13px; color: rgba(255,255,255,.65);
+            font-size: 13px;
+            color: rgba(255, 255, 255, .65);
             line-height: 1.6;
         }
 
@@ -1087,56 +1113,84 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
             gap: 24px;
-            max-width: 1100px; margin: 0 auto;
+            max-width: 1100px;
+            margin: 0 auto;
         }
-        .officers-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+
+        .officers-grid {
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        }
 
         .member-card {
             background: var(--surface);
-            border: 1px solid rgba(232,160,32,.15);
+            border: 1px solid rgba(232, 160, 32, .15);
             border-radius: 16px;
             overflow: hidden;
-            display: flex; flex-direction: column;
+            display: flex;
+            flex-direction: column;
             align-items: center;
             padding: 24px 16px 20px;
             gap: 12px;
             transition: transform .3s, box-shadow .3s;
             text-align: center;
         }
-        .member-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,.45); }
+
+        .member-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, .45);
+        }
 
         .member-photo {
-            width: 90px; height: 90px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
             object-fit: cover;
             border: 3px solid var(--gold);
         }
-        .officers-grid .member-photo { width: 110px; height: 110px; }
+
+        .officers-grid .member-photo {
+            width: 110px;
+            height: 110px;
+        }
 
         .member-name {
-            font-size: 15px; font-weight: 700; color: #fff;
+            font-size: 15px;
+            font-weight: 700;
+            color: #fff;
             letter-spacing: .5px;
         }
+
         .member-role {
-            font-size: 12px; font-weight: 600;
-            color: var(--gold); letter-spacing: 1px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gold);
+            letter-spacing: 1px;
             text-transform: uppercase;
         }
+
         .member-empty {
             grid-column: 1 / -1;
-            color: var(--muted); font-size: 14px;
-            padding: 40px; text-align: center;
-            border: 1px dashed rgba(255,255,255,.1);
+            color: var(--muted);
+            font-size: 14px;
+            padding: 40px;
+            text-align: center;
+            border: 1px dashed rgba(255, 255, 255, .1);
             border-radius: 12px;
         }
-        .member-empty code { color: var(--gold); }
+
+        .member-empty code {
+            color: var(--gold);
+        }
 
         /* Officers: gold accent strip at top of card */
         .officers-grid .member-card::before {
-            content: ''; display: block;
-            width: 100%; height: 4px;
+            content: '';
+            display: block;
+            width: 100%;
+            height: 4px;
             background: linear-gradient(90deg, var(--gold), transparent);
-            margin: -24px -16px 0; width: calc(100% + 32px);
+            margin: -24px -16px 0;
+            width: calc(100% + 32px);
         }
 
         /* ─── Mobile: Drivers as horizontal scroll strip ─────── */
@@ -1151,12 +1205,17 @@
                 -webkit-overflow-scrolling: touch;
                 scrollbar-width: thin;
             }
+
             .drivers-grid .member-card {
                 flex: 0 0 140px;
                 min-width: 140px;
                 padding: 18px 12px 14px;
             }
-            .drivers-grid .member-photo { width: 72px; height: 72px; }
+
+            .drivers-grid .member-photo {
+                width: 72px;
+                height: 72px;
+            }
         }
     </style>
 </head>
@@ -1436,16 +1495,6 @@
         </div>
     </section>
 
-    <!-- ═══════════════════════ DRIVERS ════════════════════════ -->
-    <section id="drivers" style="background: var(--navy);">
-        <div class="section-tag reveal">The Fleet</div>
-        <h2 class="section-title reveal">Our Drivers</h2>
-        <p class="section-sub reveal">Elite drivers keeping the nation moving, one delivery at a time.</p>
-        <div class="members-grid drivers-grid" id="drivers-grid">
-            <div class="member-empty" id="drivers-empty">No drivers added yet. Use <code>/adddriver</code> to add
-                drivers.</div>
-        </div>
-    </section>
 
     <!-- ═══════════════════════ STATS ═════════════════════════ -->
     <section id="stats">
@@ -1691,10 +1740,11 @@
                     console.log('[Supabase] CDN ready. Loading data...');
                     fetchRealtimeStats();
                     subscribeToGuildStats();
+                    subscribeToMemberAvatars();
                     loadPartners();
                     loadMembers();
                 } else if (attempt < 12) {
-                    setTimeout(function() { waitForSupabase(attempt + 1); }, 500);
+                    setTimeout(function () { waitForSupabase(attempt + 1); }, 500);
                 } else {
                     console.warn('[Supabase] CDN failed to load after 6s. Stats will not show.');
                 }
@@ -1776,6 +1826,27 @@
                     .subscribe();
             }
 
+            /* ─── Supabase Realtime: avatar live updates ──────────────── */
+            function subscribeToMemberAvatars() {
+                if (!supabase) return;
+                supabase
+                    .channel('member_avatars_website')
+                    .on('postgres_changes', {
+                        event: 'UPDATE',
+                        schema: 'public',
+                        table: 'website_members'
+                    }, (payload) => {
+                        const updated = payload.new;
+                        if (!updated.discord_id || !updated.photo_url) return;
+                        // Find the img element for this member and update src
+                        const img = document.querySelector(
+                            '[data-discord-id="' + updated.discord_id + '"] .member-photo'
+                        );
+                        if (img) img.src = updated.photo_url;
+                    })
+                    .subscribe();
+            }
+
             /* ─── Load Partners from Supabase ─────────────────────────── */
             async function loadPartners() {
                 if (!supabase) return;
@@ -1799,7 +1870,7 @@
                         card.innerHTML =
                             '<div class="partner-bg" style="background-image:url(\'' + (p.bg_url || '') + '\')"></div>' +
                             '<div class="partner-logo-box">' +
-                                (p.logo_url ? '<img src="' + p.logo_url + '" alt="' + p.name + ' logo">' : p.name.charAt(0)) +
+                            (p.logo_url ? '<img src="' + p.logo_url + '" alt="' + p.name + ' logo">' : p.name.charAt(0)) +
                             '</div>' +
                             '<div class="partner-name">' + p.name + '</div>' +
                             '<div class="partner-desc">' + (p.description || '') + '</div>';
@@ -1826,12 +1897,12 @@
                     if (!data || data.length === 0) return;
 
                     const officersGrid = document.getElementById('officers-grid');
-                    const driversGrid  = document.getElementById('drivers-grid');
+                    const driversGrid = document.getElementById('drivers-grid');
                     const officersEmpty = document.getElementById('officers-empty');
-                    const driversEmpty  = document.getElementById('drivers-empty');
+                    const driversEmpty = document.getElementById('drivers-empty');
 
                     const officers = data.filter(m => m.section === 'officer');
-                    const drivers  = data.filter(m => m.section === 'driver');
+                    const drivers = data.filter(m => m.section === 'driver');
 
                     if (officers.length > 0 && officersGrid) {
                         officersEmpty && officersEmpty.remove();
@@ -1849,6 +1920,7 @@
             function buildMemberCard(m) {
                 const card = document.createElement('div');
                 card.className = 'member-card reveal';
+                if (m.discord_id) card.dataset.discordId = m.discord_id;
                 card.innerHTML =
                     '<img class="member-photo" src="' + (m.photo_url || 'https://cdn.discordapp.com/embed/avatars/0.png') + '" alt="' + m.display_name + '" onerror="this.src=\'https://cdn.discordapp.com/embed/avatars/0.png\'">' +
                     '<div class="member-name">' + m.display_name + '</div>' +
