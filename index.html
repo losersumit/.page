@@ -868,6 +868,170 @@
                 text-align: center;
             }
         }
+
+        /* ─── Modal ─────────────────────────────────────────────── */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 22, 40, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all .3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--navy2);
+            border: 1px solid rgba(232, 160, 32, .3);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 600px;
+            padding: 40px;
+            position: relative;
+            transform: translateY(20px);
+            transition: all .3s;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            font-size: 24px;
+            cursor: pointer;
+            transition: color .2s;
+        }
+
+        .modal-close:hover {
+            color: var(--gold);
+        }
+
+        .modal-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 32px;
+            color: var(--gold);
+            margin-bottom: 24px;
+            letter-spacing: 1px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--white);
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--white);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            transition: border-color .3s;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        /* ─── Divisions & Partners ──────────────────────────────── */
+        .divisions-grid,
+        .partners-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+
+        .division-card,
+        .partner-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            transition: all .3s;
+        }
+
+        .division-card:hover,
+        .partner-card:hover {
+            border-color: rgba(232, 160, 32, .3);
+            transform: translateY(-4px);
+        }
+
+        .division-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 32px;
+            color: var(--gold);
+            margin-bottom: 12px;
+        }
+
+        .division-desc {
+            font-size: 15px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .partner-logo {
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 24px;
+            color: var(--muted);
+            border: 1px dashed var(--border);
+        }
+
+        @media (max-width: 700px) {
+
+            .divisions-grid,
+            .partners-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 
@@ -882,12 +1046,14 @@
         </div>
         <div class="nav-links">
             <a href="#about">About</a>
+            <a href="#divisions">Divisions</a>
             <a href="#services">Services</a>
             <a href="#fleet">Fleet</a>
+            <a href="#partners">Partners</a>
             <a href="#stats">Stats</a>
             <a href="#join">Join Us</a>
         </div>
-        <a href="#join" class="nav-btn">Enlist Now</a>
+        <button onclick="openEnlistModal()" class="nav-btn" style="border:none; cursor:pointer;">Enlist Now</button>
     </nav>
 
     <!-- ═══════════════════════ HERO ══════════════════════════ -->
@@ -914,9 +1080,9 @@
                 Where every mile counts and every driver is a professional.
             </p>
             <div class="hero-actions">
-                <a href="#join" class="btn-primary">
+                <button onclick="openEnlistModal()" class="btn-primary">
                     🚛 Join the Convoy
-                </a>
+                </button>
                 <a href="#about" class="btn-secondary">
                     Learn More →
                 </a>
@@ -925,11 +1091,11 @@
 
         <div class="hero-stats">
             <div class="stat-card">
-                <div class="stat-num">500+</div>
+                <div class="stat-num" id="hero-stat-drivers">500+</div>
                 <div class="stat-lbl">Active Drivers</div>
             </div>
             <div class="stat-card">
-                <div class="stat-num">1M+</div>
+                <div class="stat-num" id="hero-stat-miles">1M+</div>
                 <div class="stat-lbl">Miles Hauled</div>
             </div>
             <div class="stat-card">
@@ -981,8 +1147,9 @@
                 <div class="section-tag reveal">Who We Are</div>
                 <h2 class="section-title reveal">Built for the<br><span style="color:var(--gold)">Open Road</span></h2>
                 <p class="section-sub reveal">
-                    National Mobility Command is a premier virtual trucking company delivering freight
-                    with discipline, precision, and a deep respect for the craft of the road.
+                    National Mobility Command (NMC) is a private logistics contractor operating under strategic and
+                    mandated transport agreements, specializing in confidential, high-value, and restricted cargo
+                    mobility.
                 </p>
 
                 <div class="about-features">
@@ -1062,6 +1229,29 @@
         </div>
     </section>
 
+    <!-- ═══════════════════════ DIVISIONS ═════════════════════ -->
+    <section id="divisions">
+        <div class="section-tag reveal">Our Structure</div>
+        <h2 class="section-title reveal">Specialized Divisions</h2>
+        <p class="section-sub reveal">NMC operates through highly specialized divisions to ensure operational
+            superiority across all logistics domains.</p>
+
+        <div class="divisions-grid">
+            <div class="division-card reveal reveal-delay-1">
+                <div class="division-title">RapidLine</div>
+                <div class="division-desc">Focuses on time-critical, high-speed logistics and express transportation.
+                    RapidLine ensures that crucial cargo reaches its destination exactly when needed, with zero margin
+                    for error.</div>
+            </div>
+            <div class="division-card reveal reveal-delay-2">
+                <div class="division-title">High-Value Operations (HVO)</div>
+                <div class="division-desc">The elite branch dealing with securely transporting top-secret, heavily
+                    guarded, and multi-million dollar assets. HVO drivers are hand-picked for their flawless records and
+                    reliability.</div>
+            </div>
+        </div>
+    </section>
+
     <!-- ═══════════════════════ FLEET ═════════════════════════ -->
     <section id="fleet">
         <div class="section-tag reveal">Our Vehicles</div>
@@ -1071,26 +1261,22 @@
 
         <div class="fleet-grid">
             <div class="fleet-card reveal reveal-delay-1">
-                <img src="Assets/.truckgallery/nmc_orangenavy_standard.png" alt="Class 8 Semi"
-                    style="width: 100%; height: 120px; object-fit: contain; margin-bottom: 14px; filter: drop-shadow(0 4px 12px rgba(232, 160, 32, .25));">
+                <div class="fleet-truck-icon">🚛</div>
                 <div class="fleet-name">Class 8 Semi</div>
                 <div class="fleet-tag">Standard</div>
             </div>
             <div class="fleet-card reveal reveal-delay-2">
-                <img src="Assets/.truckgallery/nmc_silvergrey_daf_trailer.png" alt="Tanker Rig"
-                    style="width: 100%; height: 120px; object-fit: contain; margin-bottom: 14px; filter: drop-shadow(0 4px 12px rgba(232, 160, 32, .25));">
+                <div class="fleet-truck-icon">🚚</div>
                 <div class="fleet-name">Tanker Rig</div>
                 <div class="fleet-tag">Liquid Haul</div>
             </div>
             <div class="fleet-card reveal reveal-delay-3">
-                <img src="Assets/.truckgallery/nmc_silvergrey_scania_trailer.png" alt="Lowboy Trailer"
-                    style="width: 100%; height: 120px; object-fit: contain; margin-bottom: 14px; filter: drop-shadow(0 4px 12px rgba(232, 160, 32, .25));">
+                <div class="fleet-truck-icon">🚜</div>
                 <div class="fleet-name">Lowboy Trailer</div>
                 <div class="fleet-tag">Oversized</div>
             </div>
             <div class="fleet-card reveal">
-                <img src="Assets/.truckgallery/nmc_orangenavy_renault.png" alt="Reefer Unit"
-                    style="width: 100%; height: 120px; object-fit: contain; margin-bottom: 14px; filter: drop-shadow(0 4px 12px rgba(232, 160, 32, .25));">
+                <div class="fleet-truck-icon">🧊</div>
                 <div class="fleet-name">Reefer Unit</div>
                 <div class="fleet-tag">Refrigerated</div>
             </div>
@@ -1099,22 +1285,30 @@
 
     <!-- ═══════════════════════ STATS ═════════════════════════ -->
     <section id="stats">
-        <div class="stats-row">
-            <div class="stat-big reveal">
-                <div class="num">500+</div>
+        <div class="stats-row" style="row-gap: 60px;">
+            <div class="stat-big reveal reveal-delay-1">
+                <div class="num" id="stat-active-drivers">--</div>
                 <div class="lbl">Active Drivers</div>
             </div>
-            <div class="stat-big reveal reveal-delay-1">
-                <div class="num">1M+</div>
-                <div class="lbl">Miles Delivered</div>
-            </div>
             <div class="stat-big reveal reveal-delay-2">
-                <div class="num">48</div>
-                <div class="lbl">States Covered</div>
+                <div class="num" id="stat-enlisted">--</div>
+                <div class="lbl">Enlisted Drivers</div>
             </div>
             <div class="stat-big reveal reveal-delay-3">
-                <div class="num">99%</div>
-                <div class="lbl">On-Time Rate</div>
+                <div class="num" id="stat-miles">--</div>
+                <div class="lbl">Miles Delivered (km)</div>
+            </div>
+            <div class="stat-big reveal reveal-delay-1">
+                <div class="num" id="stat-driving-time">--</div>
+                <div class="lbl">Driving Time (hrs)</div>
+            </div>
+            <div class="stat-big reveal reveal-delay-2">
+                <div class="num" id="stat-net-worth">--</div>
+                <div class="lbl">Net Worth ($)</div>
+            </div>
+            <div class="stat-big reveal reveal-delay-3">
+                <div class="num">100%</div>
+                <div class="lbl">Commitment</div>
             </div>
         </div>
     </section>
@@ -1133,9 +1327,9 @@
                     <div class="req-item"><span class="check">✔</span> Active & dedicated</div>
                     <div class="req-item"><span class="check">✔</span> Team player</div>
                 </div>
-                <a href="#" class="btn-primary" style="font-size:16px; padding:18px 48px;">
+                <button onclick="openEnlistModal()" class="btn-primary" style="font-size:16px; padding:18px 48px;">
                     🚛 Apply Now — It's Free
-                </a>
+                </button>
             </div>
         </div>
     </section>
@@ -1146,16 +1340,216 @@
             <img src="Assets/NMC_logo.png" alt="NMC Logo" style="width: 34px; height: 34px; object-fit: contain;">
             <span>National Mobility Command</span>
         </div>
-        <div class="footer-links">
+        <div class="footer-links" style="flex-wrap:wrap;">
             <a href="#about">About</a>
+            <a href="#divisions">Divisions</a>
             <a href="#services">Services</a>
             <a href="#fleet">Fleet</a>
+            <a href="#partners">Partners</a>
             <a href="#join">Join</a>
+        </div>
+        <div class="footer-contact" style="font-size:13px; color:var(--muted); display:flex; gap:16px; flex-wrap:wrap;">
+            <a href="https://www.instagram.com/nmc.logistics.eu" target="_blank"
+                style="display:flex; align-items:center; gap:6px: hover:color:var(--gold);">📷 Instagram</a>
+            <a href="https://www.facebook.com/people/National-Mobility-Command/61561385883344/" target="_blank"
+                style="display:flex; align-items:center; gap:6px: hover:color:var(--gold);">📘 Facebook</a>
+            <a href="https://www.youtube.com/@nmc.logistics" target="_blank"
+                style="display:flex; align-items:center; gap:6px: hover:color:var(--gold);">▶️ Youtube</a>
+            <a href="https://discord.gg/qwRUQ6msT8" target="_blank"
+                style="display:flex; align-items:center; gap:6px: hover:color:var(--gold);">💬 Discord</a>
+            <span style="display:flex; align-items:center; gap:6px;">✉️ nmc.logistics.eu@gmail.com</span>
         </div>
         <div class="footer-copy">© 2026 National Mobility Command. All rights reserved.</div>
     </footer>
 
+    <!-- ═══════════════════════ MODAL ═════════════════════════ -->
+    <div id="enlistModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeEnlistModal()">&times;</button>
+            <div class="modal-title">Enlistment Application</div>
+            <p style="color:var(--muted); font-size:14px; margin-bottom:24px; line-height:1.6;">
+                Ready to join the Command? Fill out this quick questionnaire to start your application process. Upon
+                submission, you'll be directed to our recruitment server.
+            </p>
+            <form onsubmit="submitApplication(event)">
+                <div class="form-group">
+                    <label class="form-label">Will you be active?</label>
+                    <select class="form-select" required>
+                        <option value="">Select an option</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Will you be loyal and obey the Commander?</label>
+                    <select class="form-select" required>
+                        <option value="">Select an option</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Give your introduction in brief!</label>
+                    <textarea class="form-textarea" placeholder="Tell us about yourself..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">What makes you a better than other applicants?</label>
+                    <textarea class="form-textarea" placeholder="Your specific skills or traits..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Why did you chose NMC over other VTCs?</label>
+                    <textarea class="form-textarea" placeholder="Your reason for joining..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Do you accept that the Commander has final authority in all company
+                        decisions, including member removal?</label>
+                    <select class="form-select" required>
+                        <option value="">Select an option</option>
+                        <option value="Yes">Yes, I accept</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary" style="width:100%; justify-content:center; margin-top:10px;">
+                    Submit Application & Join Discord
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Supabase JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        /* ─── Modal Logic ────────────────────────────────────────── */
+        function openEnlistModal() {
+            document.getElementById('enlistModal').classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+
+        function closeEnlistModal() {
+            document.getElementById('enlistModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function submitApplication(e) {
+            e.preventDefault();
+            // In a real scenario, you could send the form data via webhook or Supabase here.
+            // Requirement specifies redirecting the user to discord.
+            window.location.href = "https://discord.gg/qwRUQ6msT8";
+        }
+
+        // Close on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeEnlistModal();
+        });
+
+        // Close on clicking outside modal
+        document.getElementById('enlistModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('enlistModal')) closeEnlistModal();
+        });
+
+        /* ─── Supabase Integration ───────────────────────────────── */
+        // Environment details from D:\.worker\.env
+        const SUPABASE_URL = 'https://aijrvldtilncnclvvles.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpanJ2bGR0aWxuY25jbHZ2bGVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1MDQ2MjgsImV4cCI6MjA4MTA4MDYyOH0.ASKDuChVVlCzW7cnfUJQ2TbPUx90HPKZ60c6o7-s_AM';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function fetchRealtimeStats() {
+            try {
+                // 1. Fetch Active Drivers (count rows in player_stats)
+                const { count: driverCount, error: countErr } = await supabase
+                    .from('player_stats')
+                    .select('*', { count: 'exact', head: true });
+
+                // 2. Fetch sum of total_distance_km and total_time_minutes
+                // Note: Supabase JS client doesn't do sum across all rows out of the box unless via rpc.
+                // We'll fetch all rows to calculate sum since it's client side, or if large, ideally use a view/rpc.
+                // Assuming a reasonable number of players for now.
+                const { data: statsData, error: statsErr } = await supabase
+                    .from('player_stats')
+                    .select('total_distance_km, total_time_minutes');
+
+                let totalDistance = 0;
+                let totalTimeMins = 0;
+                if (statsData) {
+                    statsData.forEach(s => {
+                        totalDistance += (s.total_distance_km || 0);
+                        totalTimeMins += (s.total_time_minutes || 0);
+                    });
+                }
+
+                // Driving Time in Hours
+                const totalHours = Math.floor(totalTimeMins / 60);
+
+                // 3. Fetch Net Worth (sum of total_income from player_stats)
+                // Assuming total_income represents current balance or total earned.
+                const { data: incomeData, error: incomeErr } = await supabase
+                    .from('player_stats')
+                    .select('total_income');
+
+                let netWorth = 0;
+                if (incomeData) {
+                    incomeData.forEach(i => {
+                        netWorth += (i.total_income || 0);
+                    });
+                }
+
+                // 4. Note on Enlisted Count:
+                // Frontend cannot ping discord API securely.
+                // We will default 'Enlisted Drivers' to driverCount until a 'server_stats' or discord syncing mechanism is in place.
+                // In your discord bot guildMemberRoleAdd event, you should update a 'server_stats' table to get precise enlisted role numbers.
+
+                // Animate stats once fetched
+                animateRealValue('stat-active-drivers', driverCount || 0, '');
+                animateRealValue('hero-stat-drivers', driverCount || 0, '+');
+
+                animateRealValue('stat-enlisted', driverCount || 0, '+'); // Temporary approximation
+
+                animateRealValue('stat-miles', totalDistance || 0, ' km');
+                animateRealValue('hero-stat-miles', totalDistance || 0, ' km');
+
+                animateRealValue('stat-driving-time', totalHours || 0, ' h');
+
+                animateRealValue('stat-net-worth', netWorth || 0, '$', true);
+
+            } catch (e) {
+                console.error("Error fetching realtime stats:", e);
+            }
+        }
+
+        // Custom animation function for realtime format
+        function animateRealValue(elementId, target, suffix = '', isCurrency = false) {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+
+            let current = 0;
+            const steps = 60;
+            const inc = target / steps;
+
+            if (target === 0) {
+                el.textContent = isCurrency ? `$0` : `0${suffix}`;
+                return;
+            }
+
+            const timer = setInterval(() => {
+                current = Math.min(current + inc, target);
+
+                let displayVal = "";
+                if (isCurrency) {
+                    displayVal = "$" + Math.floor(current).toLocaleString();
+                } else if (target >= 10000) {
+                    displayVal = (current / 1000).toFixed(1) + 'K';
+                } else {
+                    displayVal = Math.floor(current).toLocaleString();
+                }
+
+                el.textContent = displayVal + suffix;
+                if (current >= target) clearInterval(timer);
+            }, 30);
+        }
+
+        // Initialize fetching
+        fetchRealtimeStats();
+
         // ─── Scroll Reveal ────────────────────────────────────────
         const revealEls = document.querySelectorAll('.reveal');
         const observer = new IntersectionObserver((entries) => {
@@ -1171,30 +1565,6 @@
             nav.style.height = window.scrollY > 60 ? '58px' : '72px';
         });
 
-        // ─── Counter animation ────────────────────────────────────
-        function animateCount(el, target, suffix = '') {
-            let current = 0;
-            const inc = target / 60;
-            const timer = setInterval(() => {
-                current = Math.min(current + inc, target);
-                el.textContent = (target >= 1000000
-                    ? (current / 1000000).toFixed(1) + 'M'
-                    : Math.floor(current)) + suffix;
-                if (current >= target) clearInterval(timer);
-            }, 24);
-        }
-        const statsObserver = new IntersectionObserver((entries) => {
-            entries.forEach(e => {
-                if (!e.isIntersecting) return;
-                const nums = e.target.querySelectorAll('.num');
-                const raw = [500, 1000000, 48, 99];
-                const sfx = ['+', '+', '', '%'];
-                nums.forEach((n, i) => animateCount(n, raw[i], sfx[i]));
-                statsObserver.unobserve(e.target);
-            });
-        }, { threshold: 0.3 });
-        const statsSection = document.getElementById('stats');
-        if (statsSection) statsObserver.observe(statsSection);
     </script>
 </body>
 
