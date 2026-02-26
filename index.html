@@ -2232,10 +2232,10 @@
             async function loadLeaderboards() {
                 if (!supabase) return;
                 try {
-                    // Step 1: get all NMC player IDs + usernames
+                    // Step 1: get all NMC player IDs + display names
                     const { data: players, error: pErr } = await supabase
                         .from('players')
-                        .select('id, username')
+                        .select('id, username, display_name')
                         .eq('guild_id', TARGET_GUILD_ID);
 
                     if (pErr || !players || players.length === 0) {
@@ -2246,7 +2246,8 @@
 
                     const ids = players.map(p => p.id);
                     const userMap = {};
-                    players.forEach(p => { userMap[p.id] = p.username; });
+                    // Prefer server display name (nickname), fall back to username
+                    players.forEach(p => { userMap[p.id] = p.display_name || p.username; });
 
                     // Step 2: 5 parallel queries
                     const queries = [
