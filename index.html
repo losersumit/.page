@@ -1406,6 +1406,19 @@
             opacity: 1;
         }
 
+        .footer-social-link {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color .2s;
+        }
+
+        .footer-social-link:hover {
+            color: #fff;
+        }
+
         /* ─── Leaderboard ────────────────────────────────────── */
         .lb-strip {
             display: flex;
@@ -1605,39 +1618,16 @@
     <!-- ═══════════════════════ ABOUT ═════════════════════════ -->
     <section id="about">
         <div class="about-grid">
-            <div class="about-visual reveal">
-                <div class="truck-icon-wrap">
-                    <!-- Inline truck SVG -->
-                    <svg class="truck-svg" viewBox="0 0 280 140" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Trailer -->
-                        <rect x="10" y="40" width="170" height="70" rx="8" fill="#1a2d52" stroke="#e8a020"
-                            stroke-width="1.5" />
-                        <!-- Cabin -->
-                        <rect x="180" y="50" width="80" height="60" rx="8" fill="#0d1f3c" stroke="#e8a020"
-                            stroke-width="1.5" />
-                        <!-- Windshield -->
-                        <rect x="220" y="56" width="34" height="28" rx="4" fill="#ffd770" opacity=".15" stroke="#e8a020"
-                            stroke-width="1" />
-                        <!-- Light bar -->
-                        <rect x="180" y="50" width="80" height="6" rx="3" fill="#e8a020" opacity=".6" />
-                        <!-- NMC text on trailer -->
-                        <text x="60" y="82" font-family="'Bebas Neue',sans-serif" font-size="28" fill="#e8a020"
-                            opacity=".8" letter-spacing="4">NMC</text>
-                        <!-- Stripe -->
-                        <rect x="10" y="95" width="170" height="5" rx="2" fill="#e8a020" opacity=".4" />
-                        <!-- Wheels -->
-                        <circle cx="50" cy="116" r="14" fill="#0a1628" stroke="#e8a020" stroke-width="2" />
-                        <circle cx="50" cy="116" r="6" fill="#e8a020" opacity=".5" />
-                        <circle cx="120" cy="116" r="14" fill="#0a1628" stroke="#e8a020" stroke-width="2" />
-                        <circle cx="120" cy="116" r="6" fill="#e8a020" opacity=".5" />
-                        <circle cx="220" cy="116" r="14" fill="#0a1628" stroke="#e8a020" stroke-width="2" />
-                        <circle cx="220" cy="116" r="6" fill="#e8a020" opacity=".5" />
-                        <!-- Headlights -->
-                        <rect x="257" y="70" width="12" height="8" rx="2" fill="#ffd770" opacity=".8" />
-                        <rect x="257" y="84" width="12" height="5" rx="2" fill="#ff6b47" opacity=".6" />
-                    </svg>
-                    <div class="about-visual-label">Fleet Unit · Alpha Division</div>
+            <div class="about-visual reveal"
+                style="position:relative; overflow:hidden; border-radius:20px; min-height:360px;">
+                <img src="Assets/team.png" alt="NMC Team"
+                    style="width:100%; height:100%; object-fit:cover; position:absolute; inset:0;">
+                <div
+                    style="position:absolute; inset:0; background:linear-gradient(to top, rgba(10,22,40,.85) 0%, rgba(10,22,40,.1) 60%);">
                 </div>
+                <div class="about-visual-label"
+                    style="position:absolute; bottom:20px; left:0; right:0; text-align:center; z-index:1;">NMC Team ·
+                    National Mobility Command</div>
             </div>
 
             <div>
@@ -1783,8 +1773,8 @@
     <!-- ═══════════════════════ OFFICERS ═══════════════════════ -->
     <section id="officers" style="background: linear-gradient(180deg, #0a1628 0%, var(--navy) 100%);">
         <div class="section-tag reveal">Command Structure</div>
-        <h2 class="section-title reveal">NMC Officers</h2>
-        <p class="section-sub reveal">The leadership driving NMC forward with discipline and precision.</p>
+        <h2 class="section-title reveal">NMC Team</h2>
+        <p class="section-sub reveal">The team driving NMC forward with discipline and precision.</p>
         <div class="members-grid officers-grid" id="officers-grid">
             <div class="member-empty" id="officers-empty">No officers added yet. Use <code>/adddriver</code> to add
                 officers.</div>
@@ -1914,16 +1904,40 @@
             <a href="#leaderboard">Leaderboard</a>
             <a href="#join">Join</a>
         </div>
-        <div class="footer-contact" style="font-size:13px; color:var(--muted); display:flex; gap:16px; flex-wrap:wrap;">
-            <a href="https://www.instagram.com/nmc.logistics.eu" target="_blank"
-                style="display:flex; align-items:center; gap:6px: hover:color:var(--gold);">📷 Instagram</a>
+        <div class="footer-contact"
+            style="font-size:13px; color:var(--muted); display:flex; gap:20px; flex-wrap:wrap; align-items:center;">
+            <a href="https://www.instagram.com/nmc.logistics.eu" target="_blank" class="footer-social-link"
+                title="Instagram">
+                <img src="Assets/Instagram_logo_2022.svg" alt="Instagram"
+                    style="width:22px;height:22px;object-fit:contain;filter:brightness(.8);transition:filter .2s;"
+                    onmouseover="this.style.filter='brightness(1.2)'" onmouseout="this.style.filter='brightness(.8)'">
+                <span>Instagram</span>
+            </a>
             <a href="https://www.facebook.com/people/National-Mobility-Command/61561385883344/" target="_blank"
-                style="display:flex; align-items:center; gap:6px: hover:color:var(--gold);">📘 Facebook</a>
-            <a href="https://www.youtube.com/@nmc.logistics" target="_blank"
-                style="display:flex; align-items:center; gap:6px: hover:color:var(--gold);">▶️ Youtube</a>
-            <a href="https://discord.gg/qwRUQ6msT8" target="_blank"
-                style="display:flex; align-items:center; gap:6px: hover:color:var(--gold);">💬 Discord</a>
-            <span style="display:flex; align-items:center; gap:6px;">✉️ nmc.logistics.eu@gmail.com</span>
+                class="footer-social-link" title="Facebook">
+                <img src="Assets/2023_Facebook_icon.svg" alt="Facebook"
+                    style="width:22px;height:22px;object-fit:contain;filter:brightness(.8);transition:filter .2s;"
+                    onmouseover="this.style.filter='brightness(1.2)'" onmouseout="this.style.filter='brightness(.8)'">
+                <span>Facebook</span>
+            </a>
+            <a href="https://www.youtube.com/@nmc.logistics" target="_blank" class="footer-social-link" title="YouTube">
+                <img src="Assets/YouTube_2024.svg" alt="YouTube"
+                    style="width:22px;height:22px;object-fit:contain;filter:brightness(.8);transition:filter .2s;"
+                    onmouseover="this.style.filter='brightness(1.2)'" onmouseout="this.style.filter='brightness(.8)'">
+                <span>YouTube</span>
+            </a>
+            <a href="https://discord.gg/qwRUQ6msT8" target="_blank" class="footer-social-link" title="Discord">
+                <img src="Assets/Discord_logo.svg" alt="Discord"
+                    style="width:22px;height:22px;object-fit:contain;filter:brightness(.8);transition:filter .2s;"
+                    onmouseover="this.style.filter='brightness(1.2)'" onmouseout="this.style.filter='brightness(.8)'">
+                <span>Discord</span>
+            </a>
+            <a href="mailto:nmc.logistics.eu@gmail.com" class="footer-social-link" title="Email">
+                <img src="Assets/Gmail_icon_(2020).svg" alt="Gmail"
+                    style="width:22px;height:22px;object-fit:contain;filter:brightness(.8);transition:filter .2s;"
+                    onmouseover="this.style.filter='brightness(1.2)'" onmouseout="this.style.filter='brightness(.8)'">
+                <span>nmc.logistics.eu@gmail.com</span>
+            </a>
         </div>
         <div class="footer-copy">© 2026 National Mobility Command. All rights reserved.</div>
     </footer>
