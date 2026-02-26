@@ -1250,9 +1250,30 @@
             }
         }
 
-        @media (max-width: 540px) {
+        /* Phone: horizontal scroll strip — keeps page height short */
+        @media (max-width: 600px) {
             .gallery-grid {
-                columns: 1;
+                columns: unset;
+                display: flex;
+                flex-direction: row;
+                overflow-x: auto;
+                gap: 12px;
+                padding-bottom: 12px;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: thin;
+                scrollbar-color: rgba(232, 160, 32, .4) transparent;
+            }
+
+            .gallery-item {
+                flex: 0 0 260px;
+                min-width: 260px;
+                margin-bottom: 0;
+            }
+
+            .gallery-item img,
+            .gallery-item video {
+                height: 180px;
+                object-fit: cover;
             }
         }
 
