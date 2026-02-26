@@ -7,6 +7,20 @@
     <title>National Mobility Command | Delivering the Nation</title>
     <meta name="description"
         content="National Mobility Command — Elite virtual trucking, precision logistics, and nationwide freight transport. Join the convoy today.">
+
+    <!-- ═══ Open Graph / Discord Embed ═══════════════════════════════════ -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="National Mobility Command">
+    <meta property="og:title" content="National Mobility Command | NMC">
+    <meta property="og:description"
+        content="Elite virtual trucking & precision logistics. Join NMC — the nation's premier freight transport command. Enlist today.">
+    <meta property="og:url" content="https://page.nmc-logistics-eu.workers.dev/">
+    <meta property="og:image" content="https://page.nmc-logistics-eu.workers.dev/Assets/NMC_logo.png">
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
+
+    <!-- Discord uses this for the left-border accent color -->
+    <meta name="theme-color" content="#e8a020">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -1988,17 +2002,17 @@
                     const empty = document.getElementById('gallery-empty');
                     empty && empty.remove();
 
-                    data.forEach(function(item) {
+                    data.forEach(function (item) {
                         const div = document.createElement('div');
                         div.className = 'gallery-item';
                         const isVid = item.media_type === 'video';
                         div.innerHTML =
                             (isVid
                                 ? '<video src="' + item.media_url + '" muted loop playsinline></video>' +
-                                  '<span class="gallery-video-badge">&#9654; VIDEO</span>'
+                                '<span class="gallery-video-badge">&#9654; VIDEO</span>'
                                 : '<img src="' + item.media_url + '" alt="' + (item.description || '') + '" loading="lazy">')
                             + '<div class="gallery-overlay"><span class="gallery-overlay-text">' + (item.description || '') + '</span></div>';
-                        div.addEventListener('click', function() {
+                        div.addEventListener('click', function () {
                             openLightbox(item.media_url, item.media_type, item.description);
                         });
                         grid.appendChild(div);
@@ -2009,9 +2023,9 @@
             }
 
             function openLightbox(url, type, desc) {
-                const lb    = document.getElementById('lightbox');
-                const img   = document.getElementById('lightbox-img');
-                const vid   = document.getElementById('lightbox-vid');
+                const lb = document.getElementById('lightbox');
+                const img = document.getElementById('lightbox-img');
+                const vid = document.getElementById('lightbox-vid');
                 const ldesc = document.getElementById('lightbox-desc');
                 img.classList.remove('active');
                 vid.classList.remove('active');
@@ -2027,7 +2041,7 @@
             }
 
             function closeLightbox() {
-                const lb  = document.getElementById('lightbox');
+                const lb = document.getElementById('lightbox');
                 const vid = document.getElementById('lightbox-vid');
                 lb.classList.remove('active');
                 vid.pause && vid.pause();
