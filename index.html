@@ -2097,6 +2097,13 @@
                 if (e.target === document.getElementById('enlistModal')) closeEnlistModal();
             });
 
+            // Refresh gallery seamlessly when user tabs back (in case bot ran URL refresh while backgrounded)
+            document.addEventListener("visibilitychange", () => {
+                if (document.visibilityState === "visible") {
+                    loadGallery(); 
+                }
+            });
+
             /* ─── Supabase Integration ───────────────────────────────── */
             const SUPABASE_URL = 'https://aijrvldtilncnclvvles.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpanJ2bGR0aWxuY25jbHZ2bGVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1MDQ2MjgsImV4cCI6MjA4MTA4MDYyOH0.ASKDuChVVlCzW7cnfUJQ2TbPUx90HPKZ60c6o7-s_AM';
@@ -2113,6 +2120,7 @@
                     subscribeToGuildStats();
                     subscribeToMemberAvatars();
                     subscribeToLeaderboards();
+                    subscribeToGalleryUrls();
                     loadLeaderboards();
                     loadGallery();
                     loadPartners();
@@ -2221,6 +2229,37 @@
                     .subscribe();
             }
 
+            /* ─── Supabase Realtime: media_gallery live URL updates ───── */
+            function subscribeToGalleryUrls() {
+                if (!supabase) return;
+                supabase
+                    .channel('media_gallery_website')
+                    .on('postgres_changes', {
+                        event: 'UPDATE',
+                        schema: 'public',
+                        table: 'media_gallery'
+                    }, (payload) => {
+                        const updated = payload.new;
+                        if (!updated.id || !updated.media_url) return;
+                        
+                        // Find the existing media element
+                        const mediaEl = document.querySelector(
+                            '[data-media-id="' + updated.id + '"] img, [data-media-id="' + updated.id + '"] video'
+                        );
+                        
+                        // Seamlessly swap the src variable so the UI does not break
+                        if (mediaEl) {
+                            if (mediaEl.tagName === 'VIDEO') {
+                                mediaEl.querySelector('source').src = updated.media_url;
+                                mediaEl.load(); // Reload video with new source
+                            } else {
+                                mediaEl.src = updated.media_url;
+                            }
+                        }
+                    })
+                    .subscribe();
+            }
+
             /* ─── Leaderboards ───────────────────────────────────────── */
             const RANK_CLASS = ['r1', 'r2', 'r3', 'r4', 'r5'];
 
@@ -2319,6 +2358,7 @@
                     data.forEach(function (item) {
                         const div = document.createElement('div');
                         div.className = 'gallery-item';
+                        div.setAttribute('data-media-id', item.id);
                         const isVid = item.media_type === 'video';
                         div.innerHTML =
                             (isVid
