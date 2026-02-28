@@ -846,6 +846,11 @@
                 grid-template-columns: 1fr;
             }
 
+            .about-visual {
+                aspect-ratio: 16/9;
+                max-height: 250px;
+            }
+
             .services-grid {
                 grid-template-columns: 1fr 1fr;
             }
@@ -1618,15 +1623,14 @@
     <!-- ═══════════════════════ ABOUT ═════════════════════════ -->
     <section id="about">
         <div class="about-grid">
-            <div class="about-visual reveal"
-                style="position:relative; overflow:hidden; border-radius:20px; min-height:360px;">
+            <div class="about-visual reveal">
                 <img src="Assets/team.png" alt="NMC Team"
                     style="width:100%; height:100%; object-fit:cover; position:absolute; inset:0;">
                 <div
-                    style="position:absolute; inset:0; background:linear-gradient(to top, rgba(10,22,40,.85) 0%, rgba(10,22,40,.1) 60%);">
+                    style="position:absolute; inset:0; background:linear-gradient(to top, rgba(10,22,40,.85) 0%, rgba(10,22,40,.0) 50%); pointer-events:none;">
                 </div>
                 <div class="about-visual-label"
-                    style="position:absolute; bottom:20px; left:0; right:0; text-align:center; z-index:1;">NMC Team ·
+                    style="position:absolute; bottom:24px; left:0; right:0; text-align:center; z-index:1;">NMC Team ·
                     National Mobility Command</div>
             </div>
 
@@ -2100,7 +2104,7 @@
             // Refresh gallery seamlessly when user tabs back (in case bot ran URL refresh while backgrounded)
             document.addEventListener("visibilitychange", () => {
                 if (document.visibilityState === "visible") {
-                    loadGallery(); 
+                    loadGallery();
                 }
             });
 
@@ -2241,12 +2245,12 @@
                     }, (payload) => {
                         const updated = payload.new;
                         if (!updated.id || !updated.media_url) return;
-                        
+
                         // Find the existing media element
                         const mediaEl = document.querySelector(
                             '[data-media-id="' + updated.id + '"] img, [data-media-id="' + updated.id + '"] video'
                         );
-                        
+
                         // Seamlessly swap the src variable so the UI does not break
                         if (mediaEl) {
                             if (mediaEl.tagName === 'VIDEO') {
