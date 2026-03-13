@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>360° Truck Viewer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0b0f;
+      --surface: #13151c;
+      --border: rgba(255,255,255,0.07);
+      --accent: #e8a020;
+      --accent2: #ff6a00;
+      --text: #f0f0f5;
+      --muted: #6b7280;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── BACKGROUND GRID ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── HERO GLOW ── */
+    .glow-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(100px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .glow-orb.a {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(232,160,32,0.18) 0%, transparent 70%);
+      top: -120px; left: 50%; transform: translateX(-50%);
+    }
+    .glow-orb.b {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(255,106,0,0.12) 0%, transparent 70%);
+      bottom: 80px; right: -80px;
+    }
+
+    /* ── LAYOUT ── */
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 24px 80px;
+      gap: 40px;
+    }
+
+    /* ── BADGE ── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(232,160,32,0.35);
+      background: rgba(232,160,32,0.08);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .badge span { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); display: block; animation: pulse 2s ease-in-out infinite; }
+
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+
+    /* ── HEADING ── */
+    .heading {
+      text-align: center;
+    }
+    .heading h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #ffffff 30%, var(--accent) 80%, var(--accent2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .heading p {
+      margin-top: 12px;
+      font-size: 15px;
+      color: var(--muted);
+      font-weight: 300;
+    }
+
+    /* ── VIEWER CARD ── */
+    .viewer-card {
+      width: 100%;
+      max-width: 900px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.03),
+        0 40px 80px rgba(0,0,0,0.5),
+        0 0 100px rgba(232,160,32,0.06);
+      position: relative;
+    }
+
+    /* top bar */
+    .viewer-topbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot.r { background: #ff5f57; }
+    .dot.y { background: #febc2e; }
+    .dot.g { background: #28c840; }
+    .viewer-topbar-label {
+      margin-left: auto;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* canvas area */
+    .viewer-stage {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/9;
+      cursor: grab;
+      user-select: none;
+      -webkit-user-select: none;
+      overflow: hidden;
+      background: radial-gradient(ellipse at center, #1a1d27 0%, #0a0b0f 100%);
+    }
+    .viewer-stage:active { cursor: grabbing; }
+
+    .viewer-stage img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      opacity: 0;
+      transition: opacity 0s;
+      pointer-events: none;
+      will-change: opacity;
+    }
+    .viewer-stage img.active { opacity: 1; }
+
+    /* drag hint overlay */
+    .drag-hint {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      z-index: 10;
+      pointer-events: none;
+      transition: opacity 0.5s;
+    }
+    .drag-hint-icon {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: rgba(232,160,32,0.12);
+      border: 1px solid rgba(232,160,32,0.3);
+      display: flex; align-items: center; justify-content: center;
+      animation: float 3s ease-in-out infinite;
+    }
+    .drag-hint-icon svg { width: 28px; height: 28px; fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; }
+    .drag-hint span {
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.55);
+      letter-spacing: 0.04em;
+    }
+    .drag-hint.hidden { opacity: 0; }
+
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+    /* loading overlay */
+    .loading-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      background: rgba(10,11,15,0.92);
+      z-index: 20;
+      transition: opacity 0.6s;
+    }
+    .loading-overlay.hidden { opacity: 0; pointer-events: none; }
+    .spinner {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      border: 3px solid rgba(232,160,32,0.15);
+      border-top-color: var(--accent);
+      animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text {
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+    .progress-bar-wrap {
+      width: 180px;
+      height: 3px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 99px;
+      transition: width 0.2s;
+    }
+
+    /* floor reflection line */
+    .floor-line {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(232,160,32,0.25) 50%, transparent);
+    }
+
+    /* ── BOTTOM BAR ── */
+    .viewer-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .frame-counter {
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .frame-counter strong { color: var(--accent); font-weight: 600; }
+
+    /* scrubber */
+    .scrubber-wrap {
+      flex: 1;
+      min-width: 120px;
+      max-width: 400px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .scrubber-label { font-size: 11px; color: var(--muted); white-space: nowrap; }
+    input[type=range] {
+      -webkit-appearance: none;
+      flex: 1;
+      height: 4px;
+      border-radius: 99px;
+      background: rgba(255,255,255,0.1);
+      outline: none;
+      cursor: pointer;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: 2px solid #0a0b0f;
+      cursor: pointer;
+      box-shadow: 0 0 8px rgba(232,160,32,0.5);
+    }
+
+    /* speed control */
+    .speed-btns {
+      display: flex;
+      gap: 6px;
+    }
+    .speed-btn {
+      padding: 5px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
+      font-family: 'Outfit', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .speed-btn:hover, .speed-btn.active {
+      border-color: rgba(232,160,32,0.5);
+      background: rgba(232,160,32,0.1);
+      color: var(--accent);
+    }
+
+    /* auto-rotate toggle */
+    .rotate-btn {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      font-size: 13px;
+      font-family: 'Outfit', sans-serif;
+      cursor: pointer;
+      transition: all 0.25s;
+      white-space: nowrap;
+    }
+    .rotate-btn svg { width: 15px; height: 15px; }
+    .rotate-btn:hover, .rotate-btn.active {
+      border-color: rgba(232,160,32,0.45);
+      background: rgba(232,160,32,0.08);
+      color: var(--accent);
+    }
+
+    /* ── STATS ROW ── */
+    .stats {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 18px 28px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      min-width: 120px;
+    }
+    .stat-val {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #fff 40%, var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-key {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      font-size: 12px;
+      color: var(--muted);
+      opacity: 0.5;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .viewer-bar { flex-direction: column; align-items: flex-start; }
+      .scrubber-wrap { max-width: 100%; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="glow-orb a"></div>
+  <div class="glow-orb b"></div>
+
+  <div class="wrapper">
+
+    <div class="badge"><span></span>Interactive 360°</div>
+
+    <div class="heading">
+      <h1>Truck 360° View</h1>
+      <p>Drag horizontally to rotate &nbsp;·&nbsp; Use the scrubber to jump to any angle</p>
+    </div>
+
+    <!-- VIEWER -->
+    <div class="viewer-card">
+
+      <div class="viewer-topbar">
+        <div class="dot r"></div>
+        <div class="dot y"></div>
+        <div class="dot g"></div>
+        <span class="viewer-topbar-label">360° Viewer &mdash; 28 frames</span>
+      </div>
+
+      <div class="viewer-stage" id="stage">
+
+        <!-- Loading overlay -->
+        <div class="loading-overlay" id="loadingOverlay">
+          <div class="spinner"></div>
+          <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill"></div></div>
+          <div class="loading-text" id="loadingText">Loading images… 0 / 28</div>
+        </div>
+
+        <!-- Drag hint -->
+        <div class="drag-hint" id="dragHint">
+          <div class="drag-hint-icon">
+            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/><line x1="5" y1="12" x2="19" y2="12"/><polyline points="9 6 15 12 9 18"/></svg>
+          </div>
+          <span>Drag left or right to rotate</span>
+        </div>
+
+        <!-- Images injected by JS -->
+        <div id="imgContainer"></div>
+
+        <div class="floor-line"></div>
+      </div>
+
+      <div class="viewer-bar">
+        <div class="frame-counter">Frame <strong id="frameNum">1</strong> / 28</div>
+
+        <div class="scrubber-wrap">
+          <span class="scrubber-label">0°</span>
+          <input type="range" id="scrubber" min="0" max="27" value="0" step="1" />
+          <span class="scrubber-label">360°</span>
+        </div>
+
+        <div class="speed-btns">
+          <button class="speed-btn" data-speed="0.5">0.5×</button>
+          <button class="speed-btn active" data-speed="1">1×</button>
+          <button class="speed-btn" data-speed="2">2×</button>
+        </div>
+
+        <button class="rotate-btn" id="rotateBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+          </svg>
+          Auto Rotate
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat"><div class="stat-val">28</div><div class="stat-key">Frames</div></div>
+      <div class="stat"><div class="stat-val">360°</div><div class="stat-key">Coverage</div></div>
+      <div class="stat"><div class="stat-val" id="statFPS">—</div><div class="stat-key">Current Frame</div></div>
+    </div>
+
+    <footer>© 2026 &mdash; 360° Interactive Viewer</footer>
+  </div>
+
+  <script>
+    const TOTAL = 28;
+    // Build image path list: "Pictures/3d (1).png" … "Pictures/3d (28).png"
+    const paths = Array.from({ length: TOTAL }, (_, i) => `Pictures/3d (${i + 1}).png`);
+
+    const stage       = document.getElementById('stage');
+    const container   = document.getElementById('imgContainer');
+    const loadingOvr  = document.getElementById('loadingOverlay');
+    const progressFill= document.getElementById('progressFill');
+    const loadingText = document.getElementById('loadingText');
+    const dragHint    = document.getElementById('dragHint');
+    const frameNum    = document.getElementById('frameNum');
+    const statFPS     = document.getElementById('statFPS');
+    const scrubber    = document.getElementById('scrubber');
+    const rotateBtn   = document.getElementById('rotateBtn');
+
+    let currentFrame  = 0;
+    let loaded        = 0;
+    let isDragging    = false;
+    let dragStartX    = 0;
+    let dragStartFrame= 0;
+    let hintDismissed = false;
+    let autoRotating  = false;
+    let autoTimer     = null;
+    let dragSensitivity = 1;   // pixels per frame change denominator
+    const DRAG_PX_PER_FRAME = 18; // px of drag to advance 1 frame
+
+    // ─── CREATE IMG ELEMENTS ───
+    const imgs = paths.map((src, i) => {
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = `Truck angle ${i + 1}`;
+      if (i === 0) img.classList.add('active');
+      img.addEventListener('load', onLoad);
+      img.addEventListener('error', onLoad); // count errors too so we don't hang
+      container.appendChild(img);
+      return img;
+    });
+
+    function onLoad() {
+      loaded++;
+      const pct = Math.round((loaded / TOTAL) * 100);
+      progressFill.style.width = pct + '%';
+      loadingText.textContent = `Loading images… ${loaded} / ${TOTAL}`;
+      if (loaded >= TOTAL) {
+        setTimeout(() => {
+          loadingOvr.classList.add('hidden');
+        }, 400);
+      }
+    }
+
+    // ─── SHOW FRAME ───
+    function showFrame(idx) {
+      idx = ((idx % TOTAL) + TOTAL) % TOTAL;
+      if (idx === currentFrame) return;
+      imgs[currentFrame].classList.remove('active');
+      currentFrame = idx;
+      imgs[currentFrame].classList.add('active');
+      frameNum.textContent = currentFrame + 1;
+      statFPS.textContent  = currentFrame + 1;
+      scrubber.value       = currentFrame;
+    }
+
+    // ─── DRAG (MOUSE) ───
+    stage.addEventListener('mousedown', e => {
+      isDragging    = true;
+      dragStartX    = e.clientX;
+      dragStartFrame= currentFrame;
+      dismissHint();
+      stopAutoRotate();
+      e.preventDefault();
+    });
+
+    window.addEventListener('mousemove', e => {
+      if (!isDragging) return;
+      const delta = dragStartX - e.clientX;           // positive → drag left → next frame
+      const frameDelta = Math.round(delta / (DRAG_PX_PER_FRAME / dragSensitivity));
+      showFrame(dragStartFrame + frameDelta);
+    });
+
+    window.addEventListener('mouseup', () => { isDragging = false; });
+
+    // ─── DRAG (TOUCH) ───
+    stage.addEventListener('touchstart', e => {
+      isDragging    = true;
+      dragStartX    = e.touches[0].clientX;
+      dragStartFrame= currentFrame;
+      dismissHint();
+      stopAutoRotate();
+      e.preventDefault();
+    }, { passive: false });
+
+    window.addEventListener('touchmove', e => {
+      if (!isDragging) return;
+      const delta = dragStartX - e.touches[0].clientX;
+      const frameDelta = Math.round(delta / (DRAG_PX_PER_FRAME / dragSensitivity));
+      showFrame(dragStartFrame + frameDelta);
+    }, { passive: true });
+
+    window.addEventListener('touchend', () => { isDragging = false; });
+
+    // ─── SCRUBBER ───
+    scrubber.addEventListener('input', () => {
+      stopAutoRotate();
+      dismissHint();
+      showFrame(+scrubber.value);
+    });
+
+    // ─── SPEED BUTTONS ───
+    document.querySelectorAll('.speed-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        dragSensitivity = parseFloat(btn.dataset.speed);
+      });
+    });
+
+    // ─── AUTO ROTATE ───
+    function startAutoRotate() {
+      if (autoTimer) clearInterval(autoTimer);
+      autoRotating = true;
+      rotateBtn.classList.add('active');
+      const interval = Math.round(80 / dragSensitivity);
+      autoTimer = setInterval(() => {
+        showFrame(currentFrame + 1);
+      }, interval);
+    }
+
+    function stopAutoRotate() {
+      if (!autoRotating) return;
+      autoRotating = false;
+      rotateBtn.classList.remove('active');
+      clearInterval(autoTimer);
+      autoTimer = null;
+    }
+
+    rotateBtn.addEventListener('click', () => {
+      if (autoRotating) stopAutoRotate();
+      else startAutoRotate();
+    });
+
+    // ─── HINT DISMISS ───
+    function dismissHint() {
+      if (hintDismissed) return;
+      hintDismissed = true;
+      dragHint.classList.add('hidden');
+    }
+
+    // ─── KEYBOARD ───
+    window.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft')  { stopAutoRotate(); dismissHint(); showFrame(currentFrame - 1); }
+      if (e.key === 'ArrowRight') { stopAutoRotate(); dismissHint(); showFrame(currentFrame + 1); }
+      if (e.key === ' ')          { e.preventDefault(); autoRotating ? stopAutoRotate() : startAutoRotate(); }
+    });
+
+    // ─── WHEEL (horizontal scroll) ───
+    stage.addEventListener('wheel', e => {
+      e.preventDefault();
+      stopAutoRotate();
+      dismissHint();
+      const dir = e.deltaX !== 0 ? Math.sign(e.deltaX) : Math.sign(e.deltaY);
+      showFrame(currentFrame + dir);
+    }, { passive: false });
+  </script>
+</body>
+</html>

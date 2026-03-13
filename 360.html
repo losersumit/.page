@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>360° Truck View | National Mobility Command</title>
+    <meta name="description" content="Explore the NMC flagship truck in full 360° — drag to rotate, scrub through every angle.">
+    <meta property="og:title" content="NMC 360° Truck Showcase">
+    <meta property="og:description" content="Interactive 360° view of the NMC flagship truck. Drag to spin, zoom in, explore every angle.">
+    <meta property="og:image" content="Assets/NMC_logo.png">
+    <meta name="theme-color" content="#e8a020">
+    <link rel="icon" type="image/png" href="Assets/NMC_logo.png">
+    <link rel="apple-touch-icon" href="Assets/NMC_logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* ── Sub-page hero banner ── */
+        .subpage-hero {
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 60px 60px;
+            position: relative;
+            background:
+                linear-gradient(to bottom, rgba(10,22,40,.95) 0%, rgba(10,22,40,.75) 100%);
+            border-bottom: 1px solid var(--border);
+        }
+        .subpage-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 0%, rgba(232,160,32,.13) 0%, transparent 65%);
+            pointer-events: none;
+        }
+        .subpage-hero .section-tag  { margin-bottom: 12px; }
+        .subpage-hero .section-title { margin-bottom: 10px; }
+        .subpage-hero .section-sub  { margin: 0 auto; }
+
+        .subpage-main {
+            padding: 60px 60px 100px;
+            max-width: 960px;
+            margin: 0 auto;
+        }
+        @media (max-width: 768px) {
+            .subpage-hero { padding: 110px 24px 50px; }
+            .subpage-main { padding: 40px 24px 80px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═══════════════════════ NAV ═══════════════════════════ -->
+    <nav>
+        <div class="nav-logo">
+            <a href="index.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;">
+                <img src="Assets/NMC_logo.png" alt="NMC Logo"
+                    style="width: 42px; height: 42px; object-fit: contain; filter: drop-shadow(0 0 10px rgba(232, 160, 32, 0.4));">
+                <span>National Mobility Command</span>
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">← Home</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="360.html" style="color:var(--gold);">360° View</a>
+            <a href="partners.html">Partners</a>
+            <a href="index.html#leaderboard">Leaderboard</a>
+            <a href="index.html#join">Join Us</a>
+        </div>
+        <button onclick="openEnlistModal()" class="nav-btn" style="border:none; cursor:pointer;">Enlist Now</button>
+    </nav>
+
+    <!-- ── Sub-page hero ── -->
+    <div class="subpage-hero">
+        <div class="section-tag">Interactive</div>
+        <h2 class="section-title">360° Truck <span style="color:var(--gold)">Showcase</span></h2>
+        <p class="section-sub">Drag left or right to spin the truck around. Use the scrubber or arrow keys to step frame by frame.</p>
+    </div>
+
+    <!-- ═══════════════════════ 360° VIEWER ═══════════════════ -->
+    <div class="subpage-main">
+        <div class="viewer360-card">
+            <!-- top macOS-style bar -->
+            <div class="viewer360-topbar">
+                <div class="v360-dot v360-r"></div>
+                <div class="v360-dot v360-y"></div>
+                <div class="v360-dot v360-g"></div>
+                <span class="v360-topbar-label">NMC Logistics &mdash; 360° VIEWER &mdash; 28 FRAMES</span>
+            </div>
+
+            <!-- stage -->
+            <div class="viewer360-stage" id="v360-stage">
+                <!-- Loading -->
+                <div class="v360-loading" id="v360-loading">
+                    <div class="v360-spinner"></div>
+                    <div class="v360-progress-wrap"><div class="v360-progress-fill" id="v360-pfill"></div></div>
+                    <div class="v360-loading-text" id="v360-ltxt">Loading… 0 / 28</div>
+                </div>
+                <!-- Drag hint -->
+                <div class="v360-hint" id="v360-hint">
+                    <div class="v360-hint-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/><line x1="5" y1="12" x2="19" y2="12"/><polyline points="9 6 15 12 9 18"/></svg>
+                    </div>
+                    <span>Drag left or right to rotate</span>
+                </div>
+                <!-- Images injected by JS -->
+                <div id="v360-imgs"></div>
+                <div class="v360-floor"></div>
+            </div>
+
+            <!-- controls bar -->
+            <div class="viewer360-bar">
+                <div class="v360-counter">Frame <strong id="v360-fnum">1</strong> / 28</div>
+
+                <div class="v360-scrubber-wrap">
+                    <span class="v360-scr-label">0°</span>
+                    <input type="range" id="v360-scrubber" min="0" max="27" value="0" step="1" class="v360-scrubber" />
+                    <span class="v360-scr-label">360°</span>
+                </div>
+
+                <div class="v360-speed-btns">
+                    <button class="v360-speed-btn" data-spd="0.5">0.5×</button>
+                    <button class="v360-speed-btn v360-active" data-spd="1">1×</button>
+                    <button class="v360-speed-btn" data-spd="2">2×</button>
+                </div>
+
+                <button class="v360-rotate-btn" id="v360-rotbtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                    Auto Rotate
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════ MODAL ═════════════════════════ -->
+    <div id="enlistModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeEnlistModal()">&times;</button>
+            <div class="modal-title">Enlistment Application</div>
+            <p style="color:var(--muted); font-size:14px; margin-bottom:24px; line-height:1.6;">
+                Ready to join the Command? Fill out this quick questionnaire to start your application process.
+            </p>
+            <form onsubmit="submitApplication(event)" id="enlistForm">
+                <div class="form-group">
+                    <label class="form-label">Your Discord Username <span style="color:var(--muted);font-weight:400;">(e.g. john#1234 or john)</span></label>
+                    <input class="form-input" id="f-username" placeholder="Your Discord username" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Will you be active?</label>
+                    <select class="form-select" id="f-active" required>
+                        <option value="">Select an option</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Will you be loyal and obey the Commander?</label>
+                    <select class="form-select" id="f-loyal" required>
+                        <option value="">Select an option</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Give your introduction in brief!</label>
+                    <textarea class="form-textarea" id="f-intro" placeholder="Tell us about yourself..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">What makes you better than other applicants?</label>
+                    <textarea class="form-textarea" id="f-better" placeholder="Your specific skills or traits..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Why did you choose NMC over other VTCs?</label>
+                    <textarea class="form-textarea" id="f-whynmc" placeholder="Your reason for joining..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Do you accept that the Commander has final authority in all company decisions, including member removal?</label>
+                    <select class="form-select" id="f-authority" required>
+                        <option value="">Select an option</option>
+                        <option value="Yes">Yes, I accept</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+                <button type="submit" id="enlistSubmitBtn" class="btn-primary" style="width:100%; justify-content:center; margin-top:10px;">
+                    Submit Application &amp; Join Discord
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/app.js"></script>
+    <script src="js/viewer360.js"></script>
+
+</body>
+</html>

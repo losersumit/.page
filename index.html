@@ -48,9 +48,10 @@
         <div class="nav-links">
             <a href="#about">About</a>
             <a href="#divisions">Divisions</a>
-            <a href="#gallery">Gallery</a>
+            <a href="gallery.html">Gallery</a>
             <a href="#fleet">Fleet</a>
-            <a href="#partners">Partners</a>
+            <a href="360.html">360° View</a>
+            <a href="partners.html">Partners</a>
             <a href="#leaderboard">Leaderboard</a>
             <a href="#stats">Stats</a>
             <a href="#join">Join Us</a>
@@ -174,26 +175,15 @@
         </div>
     </section>
 
-    <!-- ═══════════════════════ GALLERY ═══════════════════════ -->
-    <section id="gallery">
+    <!-- ═══════════════════════ GALLERY TEASER ══════════════════ -->
+    <section id="gallery" style="background:var(--navy2); text-align:center;">
         <div class="section-tag reveal">In the Field</div>
         <h2 class="section-title reveal">Media Gallery</h2>
-        <p class="section-sub reveal">Real operations. Real moments. Captured on the road by NMC drivers.</p>
-
-        <div class="gallery-grid" id="gallery-grid">
-            <div class="gallery-empty" id="gallery-empty">
-                No media yet. Use <code>/addmedia</code> to add photos &amp; videos.
-            </div>
-        </div>
+        <p class="section-sub reveal" style="margin:0 auto 40px;">Real operations. Real moments. Captured on the road by NMC drivers.</p>
+        <a href="gallery.html" class="btn-primary reveal" style="display:inline-flex;">
+            📸 Browse the Gallery →
+        </a>
     </section>
-
-    <!-- Lightbox -->
-    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
-        <button class="lightbox-close" onclick="closeLightbox()">&#x2715;</button>
-        <img class="lightbox-img" id="lightbox-img" src="" alt="">
-        <video class="lightbox-vid" id="lightbox-vid" controls></video>
-        <div class="lightbox-desc" id="lightbox-desc"></div>
-    </div>
 
     <!-- ═══════════════════════ DIVISIONS ═════════════════════ -->
     <section id="divisions">
@@ -249,21 +239,30 @@
         </div>
     </section>
 
-    <!-- ═══════════════════════ PARTNERS ════════════════════════ -->
-    <section id="partners" style="background: var(--navy);">
+    <!-- ═══════════════════════ 360° TEASER ════════════════════ -->
+    <section id="showcase360" style="background:var(--navy); text-align:center;">
+        <div class="section-tag reveal">Interactive</div>
+        <h2 class="section-title reveal">360° Truck <span style="color:var(--gold)">Showcase</span></h2>
+        <p class="section-sub reveal" style="margin:0 auto 40px;">Explore any angle of our flagship truck — drag, scrub, and spin it around in full 360°.</p>
+        <a href="360.html" class="btn-primary reveal" style="display:inline-flex;">
+            🔄 Open 360° Viewer →
+        </a>
+    </section>
+
+    <!-- hidden placeholder so JS doesn't error on IDs it expects on index -->
+    <div style="display:none;" id="v360-stage"></div>
+
+    <!-- ═══════════════════════ PARTNERS TEASER ══════════════════ -->
+    <section id="partners" style="background:var(--navy2); text-align:center;">
         <div class="section-tag reveal">Trusted Partners</div>
         <h2 class="section-title reveal">Our Partners</h2>
-        <p class="section-sub reveal">We collaborate with the finest virtual trucking communities and logistics
-            organizations across the network.</p>
-        <div class="partners-grid" id="partners-grid">
-            <!-- Loaded dynamically from Supabase -->
-            <div class="partner-card partner-placeholder reveal">
-                <div class="partner-logo-box">PARTNER</div>
-                <div class="division-title">Coming Soon</div>
-                <div class="division-desc">Partnership announcements coming shortly.</div>
-            </div>
-        </div>
+        <p class="section-sub reveal" style="margin:0 auto 40px;">We collaborate with the finest virtual trucking communities and logistics organizations across the network.</p>
+        <a href="partners.html" class="btn-primary reveal" style="display:inline-flex;">
+            🤝 View All Partners →
+        </a>
     </section>
+
+
 
     <!-- ═══════════════════════ OFFICERS ═══════════════════════ -->
     <section id="officers" style="background: linear-gradient(180deg, #0a1628 0%, var(--navy) 100%);">
@@ -387,9 +386,10 @@
         <div class="footer-links" style="flex-wrap:wrap;">
             <a href="#about">About</a>
             <a href="#divisions">Divisions</a>
-            <a href="#gallery">Gallery</a>
+            <a href="gallery.html">Gallery</a>
             <a href="#fleet">Fleet</a>
-            <a href="#partners">Partners</a>
+            <a href="360.html">360° View</a>
+            <a href="partners.html">Partners</a>
             <a href="#leaderboard">Leaderboard</a>
             <a href="#join">Join</a>
         </div>
@@ -499,6 +499,10 @@
 
     <!-- App logic (Supabase, modal, gallery, leaderboard, stats, reveal, nav) -->
     <script src="js/app.js"></script>
+
+    <!-- 360° Truck Showcase -->
+    <script src="js/viewer360.js"></script>
+
 
     <!-- Dot grid interactive background -->
     <script src="js/dotgrid.js"></script>

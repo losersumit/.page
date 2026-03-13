@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Gallery | National Mobility Command</title>
+    <meta name="description" content="Real operations, real moments. Browse the NMC media gallery.">
+    <meta name="theme-color" content="#e8a020">
+    <link rel="icon" type="image/png" href="Assets/NMC_logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+
+    <style>
+    /* ─── Page basics ────────────────────────────────────────── */
+    body { background: #06090f; overflow-x: hidden; }
+
+    /* ─── Hero ──────────────────────────────────────────────── */
+    .gallery-hero {
+        padding: 110px 60px 56px;
+        text-align: center;
+        background: radial-gradient(ellipse at 50% 0%, rgba(232,160,32,.10) 0%, transparent 65%);
+        border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .gallery-hero .tag {
+        display: inline-block;
+        font-size: 11px; font-weight: 700;
+        letter-spacing: 3px; text-transform: uppercase;
+        color: #e8a020; margin-bottom: 12px;
+    }
+    .gallery-hero h1 {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: clamp(2.8rem, 7vw, 5rem);
+        letter-spacing: 3px; line-height: 1;
+        background: linear-gradient(90deg, #fff 40%, #e8a020 100%);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 12px;
+    }
+    .gallery-hero p {
+        color: #6b7280; font-size: 15px; max-width: 480px; margin: 0 auto 28px;
+        line-height: 1.6;
+    }
+
+    /* ─── Filter tabs ───────────────────────────────────────── */
+    .gallery-filters {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .filter-btn {
+        padding: 7px 20px;
+        border-radius: 999px;
+        border: 1px solid rgba(255,255,255,.12);
+        background: transparent;
+        color: #8a9bbf;
+        font-size: 13px; font-weight: 500; font-family: inherit;
+        cursor: pointer;
+        transition: all .25s;
+    }
+    .filter-btn:hover { border-color: #e8a020; color: #e8a020; }
+    .filter-btn.active {
+        background: #e8a020; border-color: #e8a020;
+        color: #06090f; font-weight: 700;
+    }
+
+    /* ─── Grid ──────────────────────────────────────────────── */
+    .gallery-wrap {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 52px 40px 100px;
+    }
+
+    /* CSS columns masonry */
+    .gallery-masonry {
+        columns: 3 320px;
+        column-gap: 20px;
+    }
+
+    @media (max-width: 720px) {
+        .gallery-masonry { columns: 2 160px; column-gap: 12px; }
+        .gallery-wrap  { padding: 32px 16px 80px; }
+        .gallery-hero  { padding: 100px 24px 44px; }
+    }
+    @media (max-width: 420px) {
+        .gallery-masonry { columns: 1; }
+    }
+
+    /* ─── Card ──────────────────────────────────────────────── */
+    .gcard {
+        break-inside: avoid;
+        margin-bottom: 20px;
+        border-radius: 12px;
+        overflow: hidden;
+        position: relative;
+        cursor: pointer;
+        border: 1px solid rgba(255,255,255,.06);
+        background: #0e1524;
+        transition: transform .35s cubic-bezier(.22,.61,.36,1),
+                    box-shadow .35s cubic-bezier(.22,.61,.36,1),
+                    border-color .35s;
+        opacity: 0;
+        transform: translateY(24px);
+    }
+    .gcard.visible {
+        opacity: 1; transform: translateY(0);
+        transition: opacity .5s ease, transform .5s ease,
+                    box-shadow .35s, border-color .35s;
+    }
+    .gcard:hover {
+        transform: translateY(-5px) scale(1.015);
+        box-shadow: 0 12px 48px rgba(0,0,0,.55), 0 0 0 1px rgba(232,160,32,.35);
+        border-color: rgba(232,160,32,.35);
+        z-index: 2;
+    }
+
+    /* image fills naturally */
+    .gcard img {
+        width: 100%;
+        height: auto;
+        display: block;
+        transition: filter .35s;
+    }
+    .gcard:hover img { filter: brightness(1.08); }
+
+    /* video badge */
+    .gcard-video-badge {
+        position: absolute;
+        top: 10px; left: 10px;
+        background: rgba(0,0,0,.7);
+        border: 1px solid rgba(232,160,32,.4);
+        color: #e8a020;
+        font-size: 11px; font-weight: 700; letter-spacing: 1px;
+        padding: 3px 8px; border-radius: 6px;
+        backdrop-filter: blur(6px);
+    }
+
+    /* hover overlay */
+    .gcard-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,.75) 0%, transparent 50%);
+        opacity: 0;
+        transition: opacity .35s;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 16px;
+        pointer-events: none;
+    }
+    .gcard:hover .gcard-overlay { opacity: 1; }
+
+    .gcard-desc {
+        font-size: 13px; color: #d1d5db;
+        line-height: 1.45;
+        transform: translateY(8px);
+        transition: transform .35s;
+    }
+    .gcard:hover .gcard-desc { transform: translateY(0); }
+
+    .gcard-expand {
+        width: 32px; height: 32px;
+        border-radius: 50%;
+        background: rgba(232,160,32,.2);
+        border: 1px solid rgba(232,160,32,.5);
+        display: flex; align-items: center; justify-content: center;
+        position: absolute; top: 12px; right: 12px;
+        opacity: 0; transform: scale(.7);
+        transition: opacity .3s, transform .3s;
+    }
+    .gcard:hover .gcard-expand { opacity: 1; transform: scale(1); }
+    .gcard-expand svg { width: 14px; stroke: #e8a020; fill: none; stroke-width: 2; }
+
+    /* ─── Empty / Loading ───────────────────────────────────── */
+    .gallery-loading-state, .gallery-empty-state {
+        text-align: center;
+        padding: 80px 24px;
+        color: #4b5563;
+    }
+    .loader-ring {
+        width: 48px; height: 48px; margin: 0 auto 20px;
+        border-radius: 50%;
+        border: 3px solid rgba(232,160,32,.15);
+        border-top-color: #e8a020;
+        animation: spin .9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .gallery-empty-state .empty-icon { font-size: 3rem; margin-bottom: 12px; }
+
+    /* ─── Lightbox ──────────────────────────────────────────── */
+    #glb {
+        position: fixed; inset: 0;
+        z-index: 9999;
+        background: rgba(0,0,0,.92);
+        backdrop-filter: blur(10px);
+        display: flex; align-items: center; justify-content: center;
+        opacity: 0; visibility: hidden;
+        transition: opacity .3s, visibility .3s;
+        padding: 24px;
+    }
+    #glb.open { opacity: 1; visibility: visible; }
+
+    .glb-inner {
+        position: relative;
+        max-width: 90vw; max-height: 88vh;
+        display: flex; flex-direction: column; align-items: center;
+        gap: 14px;
+        transform: scale(.95);
+        transition: transform .3s cubic-bezier(.22,.61,.36,1);
+    }
+    #glb.open .glb-inner { transform: scale(1); }
+
+    #glb-media {
+        max-width: 88vw; max-height: 78vh;
+        object-fit: contain;
+        border-radius: 10px;
+        box-shadow: 0 24px 80px rgba(0,0,0,.8);
+        display: block;
+    }
+    #glb-video {
+        max-width: 88vw; max-height: 78vh;
+        border-radius: 10px;
+        box-shadow: 0 24px 80px rgba(0,0,0,.8);
+        display: none;
+    }
+
+    .glb-desc {
+        font-size: 14px; color: #9ca3af;
+        text-align: center; max-width: 600px;
+    }
+    .glb-nav {
+        position: fixed; top: 50%; transform: translateY(-50%);
+        background: rgba(255,255,255,.08);
+        border: 1px solid rgba(255,255,255,.14);
+        border-radius: 50%;
+        width: 44px; height: 44px;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; color: #fff; font-size: 18px;
+        transition: background .2s, border-color .2s;
+        backdrop-filter: blur(6px);
+        z-index: 10000;
+        user-select: none;
+    }
+    .glb-nav:hover { background: rgba(232,160,32,.2); border-color: rgba(232,160,32,.5); }
+    #glb-prev { left: 16px; }
+    #glb-next { right: 16px; }
+
+    .glb-close {
+        position: fixed; top: 16px; right: 20px;
+        background: rgba(255,255,255,.08);
+        border: 1px solid rgba(255,255,255,.14);
+        border-radius: 50%;
+        width: 40px; height: 40px;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; color: #fff; font-size: 20px;
+        transition: background .2s;
+        backdrop-filter: blur(6px);
+        z-index: 10000;
+    }
+    .glb-close:hover { background: rgba(200,50,50,.4); }
+
+    .glb-counter {
+        position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+        font-size: 12px; color: #6b7280; letter-spacing: .1em;
+        z-index: 10000;
+    }
+    </style>
+</head>
+<body>
+
+    <!-- ═══════════ NAV ═══════════════════════════════════════ -->
+    <nav>
+        <div class="nav-logo">
+            <a href="index.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;">
+                <img src="Assets/NMC_logo.png" alt="NMC Logo"
+                    style="width:42px;height:42px;object-fit:contain;filter:drop-shadow(0 0 10px rgba(232,160,32,0.4));">
+                <span>National Mobility Command</span>
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">← Home</a>
+            <a href="gallery.html" style="color:var(--gold);">Gallery</a>
+            <a href="360.html">360° View</a>
+            <a href="partners.html">Partners</a>
+            <a href="index.html#leaderboard">Leaderboard</a>
+            <a href="index.html#join">Join Us</a>
+        </div>
+        <button onclick="openEnlistModal()" class="nav-btn" style="border:none;cursor:pointer;">Enlist Now</button>
+    </nav>
+
+    <!-- ═══════════ HERO ═══════════════════════════════════════ -->
+    <div class="gallery-hero">
+        <div class="tag">In the Field</div>
+        <h1>Media Gallery</h1>
+        <p>Real operations. Real moments. Captured on the road by NMC drivers.</p>
+        <div class="gallery-filters" id="gallery-filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="image">Photos</button>
+            <button class="filter-btn" data-filter="video">Videos</button>
+        </div>
+    </div>
+
+    <!-- ═══════════ GALLERY GRID ══════════════════════════════ -->
+    <div class="gallery-wrap">
+        <div id="gallery-loading-state" class="gallery-loading-state">
+            <div class="loader-ring"></div>
+            <p>Loading gallery…</p>
+        </div>
+        <div class="gallery-masonry" id="gallery-masonry" style="display:none;"></div>
+        <div id="gallery-empty-state" class="gallery-empty-state" style="display:none;">
+            <div class="empty-icon">📸</div>
+            <p>No media yet. Use <code>/addmedia</code> to add photos &amp; videos.</p>
+        </div>
+    </div>
+
+    <!-- ═══════════ LIGHTBOX ══════════════════════════════════ -->
+    <div id="glb">
+        <button class="glb-close" id="glb-close" title="Close">&#x2715;</button>
+        <div class="glb-inner">
+            <img  id="glb-media" src="" alt="">
+            <video id="glb-video" controls></video>
+            <div class="glb-desc" id="glb-desc"></div>
+        </div>
+        <button class="glb-nav" id="glb-prev">&#8249;</button>
+        <button class="glb-nav" id="glb-next">&#8250;</button>
+        <div class="glb-counter" id="glb-counter"></div>
+    </div>
+
+    <!-- ═══════════ ENLIST MODAL ══════════════════════════════ -->
+    <div id="enlistModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeEnlistModal()">&times;</button>
+            <div class="modal-title">Enlistment Application</div>
+            <p style="color:var(--muted);font-size:14px;margin-bottom:24px;line-height:1.6;">Ready to join the Command? Fill out this quick questionnaire.</p>
+            <form onsubmit="submitApplication(event)" id="enlistForm">
+                <div class="form-group"><label class="form-label">Discord Username</label><input class="form-input" id="f-username" placeholder="Your username" required></div>
+                <div class="form-group"><label class="form-label">Will you be active?</label><select class="form-select" id="f-active" required><option value="">Select</option><option>Yes</option><option>No</option></select></div>
+                <div class="form-group"><label class="form-label">Will you be loyal to the Commander?</label><select class="form-select" id="f-loyal" required><option value="">Select</option><option>Yes</option><option>No</option></select></div>
+                <div class="form-group"><label class="form-label">Brief introduction</label><textarea class="form-textarea" id="f-intro" placeholder="Tell us about yourself..." required></textarea></div>
+                <div class="form-group"><label class="form-label">What makes you stand out?</label><textarea class="form-textarea" id="f-better" placeholder="Your skills or traits..." required></textarea></div>
+                <div class="form-group"><label class="form-label">Why NMC?</label><textarea class="form-textarea" id="f-whynmc" placeholder="Your reason..." required></textarea></div>
+                <div class="form-group"><label class="form-label">Do you accept Commander authority?</label><select class="form-select" id="f-authority" required><option value="">Select</option><option value="Yes">Yes, I accept</option><option>No</option></select></div>
+                <button type="submit" id="enlistSubmitBtn" class="btn-primary" style="width:100%;justify-content:center;margin-top:10px;">Submit &amp; Join Discord</button>
+            </form>
+        </div>
+    </div>
+
+    <script async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+    /* ── Modal ──────────────────────────────────────── */
+    function openEnlistModal()  { document.getElementById('enlistModal').classList.add('active'); document.body.style.overflow='hidden'; }
+    function closeEnlistModal() { document.getElementById('enlistModal').classList.remove('active'); document.body.style.overflow=''; }
+    window.openEnlistModal=openEnlistModal; window.closeEnlistModal=closeEnlistModal;
+    document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeEnlistModal(); closeLightbox(); }});
+    document.getElementById('enlistModal').addEventListener('click',e=>{ if(e.target===document.getElementById('enlistModal')) closeEnlistModal(); });
+
+    async function submitApplication(e){
+        e.preventDefault();
+        const btn=document.getElementById('enlistSubmitBtn');
+        btn.disabled=true; btn.textContent='Submitting…';
+        const payload={embeds:[{title:'New Enlistment (Website)',color:0xe8a020,fields:[
+            {name:'Username',value:document.getElementById('f-username').value,inline:true},
+            {name:'Active?',value:document.getElementById('f-active').value,inline:true},
+            {name:'Loyal?',value:document.getElementById('f-loyal').value,inline:true},
+            {name:'Intro',value:document.getElementById('f-intro').value||'—'},
+            {name:'Better?',value:document.getElementById('f-better').value||'—'},
+            {name:'Why NMC?',value:document.getElementById('f-whynmc').value||'—'},
+            {name:'Authority',value:document.getElementById('f-authority').value||'—'},
+        ],timestamp:new Date().toISOString()}]};
+        try{
+            const r=await fetch('https://discord.com/api/webhooks/1476223568780988651/d5CFOWcR48_ezrYDVeyElh3b-1wbuGgidHhe4KiL9YilXg7NN-8P1Z5kKA2TZhx6gmSj',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+            if(r.ok||r.status===204){ btn.textContent='✅ Submitted!'; document.getElementById('enlistForm').reset(); setTimeout(()=>{ window.open('https://discord.gg/qwRUQ6msT8','_blank'); closeEnlistModal(); btn.disabled=false; btn.textContent='Submit & Join Discord'; },2000); }
+            else throw 0;
+        } catch{ btn.disabled=false; btn.textContent='Submit & Join Discord'; alert('Failed. Try again or join Discord directly.'); }
+    }
+    window.submitApplication=submitApplication;
+
+    /* ── Gallery ────────────────────────────────────── */
+    const SUPABASE_URL='https://aijrvldtilncnclvvles.supabase.co';
+    const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpanJ2bGR0aWxuY25jbHZ2bGVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1MDQ2MjgsImV4cCI6MjA4MTA4MDYyOH0.ASKDuChVVlCzW7cnfUJQ2TbPUx90HPKZ60c6o7-s_AM';
+
+    let allItems=[];
+    let filtered=[];
+    let lbIndex=0;
+
+    /* Lightbox */
+    const glb=document.getElementById('glb');
+    const glbImg=document.getElementById('glb-media');
+    const glbVid=document.getElementById('glb-video');
+    const glbDesc=document.getElementById('glb-desc');
+    const glbCounter=document.getElementById('glb-counter');
+
+    function openLightbox(idx){
+        lbIndex=idx;
+        showLbItem();
+        glb.classList.add('open');
+        document.body.style.overflow='hidden';
+    }
+    function closeLightbox(){
+        glb.classList.remove('open');
+        glbVid.pause();
+        document.body.style.overflow='';
+    }
+    function showLbItem(){
+        const item=filtered[lbIndex];
+        if(!item) return;
+        const isVid=item.media_type==='video';
+        glbImg.style.display=isVid?'none':'block';
+        glbVid.style.display=isVid?'block':'none';
+        if(isVid){ glbVid.src=item.media_url; glbVid.play().catch(()=>{}); glbImg.src=''; }
+        else      { glbImg.src=item.media_url; glbVid.pause(); glbVid.src=''; }
+        glbDesc.textContent=item.description||'';
+        glbCounter.textContent=`${lbIndex+1} / ${filtered.length}`;
+    }
+    function lbPrev(){ lbIndex=(lbIndex-1+filtered.length)%filtered.length; showLbItem(); }
+    function lbNext(){ lbIndex=(lbIndex+1)%filtered.length; showLbItem(); }
+
+    document.getElementById('glb-close').addEventListener('click',closeLightbox);
+    document.getElementById('glb-prev').addEventListener('click',lbPrev);
+    document.getElementById('glb-next').addEventListener('click',lbNext);
+    glb.addEventListener('click',e=>{ if(e.target===glb) closeLightbox(); });
+    document.addEventListener('keydown',e=>{
+        if(!glb.classList.contains('open')) return;
+        if(e.key==='ArrowLeft') lbPrev();
+        if(e.key==='ArrowRight') lbNext();
+    });
+
+    /* Filter */
+    document.querySelectorAll('.filter-btn').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+            document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+            btn.classList.add('active');
+            const f=btn.dataset.filter;
+            filtered=f==='all'?[...allItems]:allItems.filter(i=>i.media_type===f);
+            renderGrid();
+        });
+    });
+
+    /* Render */
+    function renderGrid(){
+        const grid=document.getElementById('gallery-masonry');
+        const empty=document.getElementById('gallery-empty-state');
+        grid.innerHTML='';
+        if(!filtered.length){ grid.style.display='none'; empty.style.display='block'; return; }
+        empty.style.display='none';
+        grid.style.display='block';
+
+        filtered.forEach((item,i)=>{
+            const card=document.createElement('div');
+            card.className='gcard';
+            const isVid=item.media_type==='video';
+
+            card.innerHTML=`
+                ${isVid?`<video src="${escH(item.media_url)}" muted preload="metadata" style="width:100%;height:auto;display:block;"></video>`
+                        :`<img src="${escH(item.media_url)}" alt="${escH(item.description||'')}" loading="lazy">`}
+                ${isVid?'<div class="gcard-video-badge">▶ VIDEO</div>':''}
+                <div class="gcard-overlay">
+                    <div class="gcard-desc">${escH(item.description||'')}</div>
+                </div>
+                <div class="gcard-expand">
+                    <svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+                </div>`;
+
+            card.addEventListener('click',()=>openLightbox(i));
+            grid.appendChild(card);
+
+            /* staggered reveal with IntersectionObserver */
+            setTimeout(()=>{
+                observer.observe(card);
+            }, i*40);
+        });
+    }
+
+    function escH(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+    /* IntersectionObserver for entrance animation */
+    const observer=new IntersectionObserver((entries)=>{
+        entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); observer.unobserve(e.target); } });
+    },{threshold:0.05});
+
+    /* Bootstrap */
+    function waitForSb(attempt=0){
+        if(typeof window.supabase!=='undefined'){ bootGallery(); }
+        else if(attempt<30){ setTimeout(()=>waitForSb(attempt+1),200); }
+    }
+
+    async function bootGallery(){
+        try{
+            const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+            const {data,error}=await sb.from('media_gallery').select('*').order('created_at',{ascending:false});
+            if(!error && data){ allItems=data; filtered=[...data]; }
+        } catch(err){ console.warn('[Gallery]',err); }
+
+        document.getElementById('gallery-loading-state').style.display='none';
+        renderGrid();
+    }
+
+    document.addEventListener('DOMContentLoaded',()=>waitForSb());
+    </script>
+
+</body>
+</html>
