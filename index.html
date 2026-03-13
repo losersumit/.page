@@ -1,386 +1,406 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>National Mobility Command | Delivering the Nation</title>
-    <meta name="description"
-        content="National Mobility Command — Elite virtual trucking, precision logistics, and nationwide freight transport. Join the convoy today.">
-
-    <!-- ═══ Open Graph / Discord Embed ═══════════════════════════════════ -->
+    <meta name="description" content="National Mobility Command — Elite virtual trucking, precision logistics, and nationwide freight transport. Join the convoy today.">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="National Mobility Command">
     <meta property="og:title" content="National Mobility Command | NMC">
-    <meta property="og:description"
-        content="Elite virtual trucking &amp; precision logistics. Join NMC — the nation's premier freight transport command. Enlist today.">
+    <meta property="og:description" content="Elite virtual trucking &amp; precision logistics. Join NMC — the nation's premier freight transport command. Enlist today.">
     <meta property="og:url" content="https://page.nmc-logistics-eu.workers.dev/">
     <meta property="og:image" content="https://page.nmc-logistics-eu.workers.dev/Assets/NMC_logo.png">
     <meta property="og:image:width" content="512">
     <meta property="og:image:height" content="512">
-
-    <!-- Discord uses this for the left-border accent color -->
     <meta name="theme-color" content="#e8a020">
-
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="Assets/NMC_logo.png">
     <link rel="apple-touch-icon" href="Assets/NMC_logo.png">
-
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
-
-    <!-- Styles -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
-</head>
 
+    <style>
+    /* ══════════════════════════════════════════════════
+       SIDEBAR NAV
+    ══════════════════════════════════════════════════ */
+    /* hamburger toggle button — positioned inside the nav bar */
+    .nav-menu-btn {
+        background: none; border: none; cursor: pointer;
+        display: flex; flex-direction: column; gap: 5px;
+        padding: 8px; margin-left: 12px; z-index: 1100;
+    }
+    .nav-menu-btn span {
+        display: block; width: 22px; height: 2px;
+        background: #e8a020;
+        border-radius: 2px;
+        transition: transform .3s, opacity .3s, width .3s;
+        transform-origin: center;
+    }
+    .nav-menu-btn.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-menu-btn.open span:nth-child(2) { opacity: 0; width: 0; }
+    .nav-menu-btn.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* nav-links: show on desktop, collapse on small screens */
+    @media (max-width: 860px) { nav .nav-links { display: none !important; } }
+
+    /* sidebar overlay */
+    .sidebar-overlay {
+        position: fixed; inset: 0;
+        background: rgba(0,0,0,.5);
+        backdrop-filter: blur(4px);
+        z-index: 1050;
+        opacity: 0; pointer-events: none;
+        transition: opacity .35s;
+    }
+    .sidebar-overlay.open { opacity: 1; pointer-events: all; }
+
+    /* sidebar drawer */
+    .sidebar {
+        position: fixed; top: 0; left: 0; bottom: 0;
+        width: 320px;
+        background: linear-gradient(160deg, #0a1628 0%, #06090f 100%);
+        border-right: 1px solid rgba(232,160,32,.15);
+        z-index: 1100;
+        transform: translateX(-100%);
+        transition: transform .4s cubic-bezier(.22,.61,.36,1);
+        display: flex; flex-direction: column;
+        overflow-y: auto;
+    }
+    .sidebar.open { transform: translateX(0); }
+
+    .sidebar-header {
+        display: flex; align-items: center; gap: 14px;
+        padding: 28px 28px 20px;
+        border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .sidebar-header img { width: 38px; height: 38px; object-fit: contain; }
+    .sidebar-header-text { font-size: 13px; font-weight: 700; color: #fff; letter-spacing: .05em; }
+    .sidebar-header-sub { font-size: 11px; color: #e8a020; letter-spacing: .1em; text-transform: uppercase; }
+
+    /* nav sections */
+    .sidebar-section { padding: 20px 28px 0; }
+    .sidebar-section-label {
+        font-size: 10px; font-weight: 700;
+        letter-spacing: .15em; text-transform: uppercase;
+        color: rgba(255,255,255,.3);
+        margin-bottom: 10px;
+        padding-left: 4px;
+    }
+
+    .sidebar-link {
+        display: flex; align-items: center; gap: 14px;
+        padding: 12px 16px;
+        border-radius: 10px;
+        color: #c9d4e8; font-size: 15px; font-weight: 500;
+        text-decoration: none;
+        transition: background .2s, color .2s, transform .2s;
+        margin-bottom: 2px;
+        position: relative;
+    }
+    .sidebar-link:hover {
+        background: rgba(232,160,32,.08);
+        color: #e8a020;
+        transform: translateX(4px);
+    }
+    .sidebar-link .sl-icon {
+        width: 34px; height: 34px;
+        display: flex; align-items: center; justify-content: center;
+        border-radius: 8px;
+        background: rgba(255,255,255,.05);
+        font-size: 16px;
+        flex-shrink: 0;
+        transition: background .2s;
+    }
+    .sidebar-link:hover .sl-icon { background: rgba(232,160,32,.12); }
+    .sidebar-link .sl-text { flex: 1; }
+    .sidebar-link .sl-sub { font-size: 11px; color: rgba(255,255,255,.35); margin-top: 1px; }
+    .sidebar-link .sl-badge {
+        font-size: 10px; font-weight: 700;
+        background: rgba(232,160,32,.15);
+        color: #e8a020; border-radius: 6px;
+        padding: 2px 8px; letter-spacing: .05em;
+    }
+
+    .sidebar-divider { height: 1px; background: rgba(255,255,255,.06); margin: 18px 28px; }
+
+    /* sidebar has no enlist button */
+
+    /* ══════════════════════════════════════════════════
+       PARTNERS SECTION
+    ══════════════════════════════════════════════════ */
+    #partners { background: transparent; }
+
+    /* ── Partner cards: wide horizontal rows filling page width ── */
+    .partners-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+        margin-top: 48px;
+        width: 100%;
+    }
+    @media (max-width: 680px) { .partners-grid { grid-template-columns: 1fr; } }
+
+    .partner-card {
+        background: rgba(255,255,255,.09);
+        border: 1px solid rgba(255,255,255,.12);
+        border-radius: 16px;
+        padding: 24px 32px;
+        display: flex; flex-direction: row; align-items: center; gap: 24px;
+        transition: transform .3s, box-shadow .3s, border-color .3s;
+        position: relative; overflow: hidden;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+    .partner-card::before {
+        content: '';
+        position: absolute; top: 0; left: 0; bottom: 0; width: 3px;
+        background: linear-gradient(180deg, transparent, rgba(232,160,32,.6), transparent);
+        opacity: 0; transition: opacity .3s;
+    }
+    .partner-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 16px 40px rgba(0,0,0,.4);
+        border-color: rgba(232,160,32,.25);
+    }
+    .partner-card:hover::before { opacity: 1; }
+
+    .partner-logo-wrap {
+        width: 72px; height: 72px; flex-shrink: 0;
+        border-radius: 14px;
+        background: rgba(255,255,255,.12);
+        display: flex; align-items: center; justify-content: center;
+        overflow: hidden;
+    }
+    .partner-logo-wrap img { width: 100%; height: 100%; object-fit: contain; padding: 8px; }
+    .partner-logo-placeholder { font-size: 30px; }
+
+    .partner-info { flex: 1; min-width: 0; }
+    .partner-name { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .partner-type {
+        font-size: 11px; font-weight: 600;
+        letter-spacing: .12em; text-transform: uppercase;
+        color: #e8a020; margin-bottom: 6px;
+    }
+    .partner-members { font-size: 13px; color: #6b7280; }
+    .partner-discord {
+        display: inline-flex; align-items: center; gap: 6px;
+        font-size: 13px; color: #8a9bbf;
+        text-decoration: none;
+        border: 1px solid rgba(255,255,255,.1);
+        border-radius: 8px; padding: 7px 16px;
+        transition: background .2s, color .2s, border-color .2s;
+        white-space: nowrap;
+    }
+    .partner-discord:hover { background: rgba(232,160,32,.1); color: #e8a020; border-color: rgba(232,160,32,.3); }
+
+    .partners-empty { text-align: center; color: #4b5563; padding: 40px 0; font-size: 15px; }
+    .partners-loading { display: flex; align-items: center; gap: 12px; justify-content: center; padding: 40px 0; color: #6b7280; }
+    .mini-spinner {
+        width: 20px; height: 20px; border-radius: 50%;
+        border: 2px solid rgba(232,160,32,.2); border-top-color: #e8a020;
+        animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
 <body>
 
-    <!-- ═══════════════════════ NAV ═══════════════════════════ -->
+    <!-- fixed full-page dot-grid background (behind everything) -->
+    <div id="dot-grid-wrap" class="dot-grid-wrap" style="position:fixed;inset:0;z-index:-1;pointer-events:none;">
+        <canvas id="dot-grid-canvas" class="dot-grid-canvas"></canvas>
+    </div>
+
+    <!-- ═══════════════════════ SIDEBAR ════════════════ -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+    <aside class="sidebar" id="sidebar" aria-label="Site navigation">
+        <div class="sidebar-header">
+            <img src="Assets/NMC_logo.png" alt="NMC">
+            <div>
+                <div class="sidebar-header-text">National Mobility Command</div>
+                <div class="sidebar-header-sub">Quick Links</div>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-label">Sub-Pages</div>
+            <a class="sidebar-link" href="gallery.html">
+                <div class="sl-icon">📸</div>
+                <div class="sl-text">
+                    <div>Media Gallery</div>
+                    <div class="sl-sub">Photos &amp; videos</div>
+                </div>
+                <span class="sl-badge">Gallery</span>
+            </a>
+            <a class="sidebar-link" href="360.html">
+                <div class="sl-icon">🔄</div>
+                <div class="sl-text">
+                    <div>360° Truck View</div>
+                    <div class="sl-sub">Interactive showcase</div>
+                </div>
+            </a>
+            <a class="sidebar-link" href="leaderboard.html">
+                <div class="sl-icon">🏆</div>
+                <div class="sl-text">
+                    <div>Leaderboard &amp; Stats</div>
+                    <div class="sl-sub">Live driver rankings</div>
+                </div>
+                <span class="sl-badge">Live</span>
+            </a>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <div class="sidebar-section" style="padding-bottom: 28px;">
+            <div class="sidebar-section-label">Social</div>
+            <a class="sidebar-link" href="https://discord.gg/qwRUQ6msT8" target="_blank">
+                <div class="sl-icon">💬</div>
+                <div class="sl-text"><div>Discord Server</div><div class="sl-sub">Join our community</div></div>
+            </a>
+            <a class="sidebar-link" href="https://www.instagram.com/nmc.logistics.eu" target="_blank">
+                <div class="sl-icon">📷</div>
+                <div class="sl-text"><div>Instagram</div></div>
+            </a>
+            <a class="sidebar-link" href="https://www.youtube.com/@nmc.logistics" target="_blank">
+                <div class="sl-icon">▶️</div>
+                <div class="sl-text"><div>YouTube</div></div>
+            </a>
+            <a class="sidebar-link" href="https://www.facebook.com/people/National-Mobility-Command/61561385883344/" target="_blank">
+                <div class="sl-icon">📘</div>
+                <div class="sl-text"><div>Facebook</div></div>
+            </a>
+        </div>
+    </aside>
+
+    <!-- ═══════════════════════ NAV ═══════════════════ -->
     <nav>
         <div class="nav-logo">
             <img src="Assets/NMC_logo.png" alt="NMC Logo"
-                style="width: 42px; height: 42px; object-fit: contain; filter: drop-shadow(0 0 10px rgba(232, 160, 32, 0.4));">
+                style="width:42px;height:42px;object-fit:contain;filter:drop-shadow(0 0 10px rgba(232,160,32,0.4));">
             <span>National Mobility Command</span>
         </div>
         <div class="nav-links">
             <a href="#about">About</a>
             <a href="#divisions">Divisions</a>
-            <a href="gallery.html">Gallery</a>
             <a href="#fleet">Fleet</a>
-            <a href="360.html">360° View</a>
-            <a href="partners.html">Partners</a>
-            <a href="#leaderboard">Leaderboard</a>
-            <a href="#stats">Stats</a>
-            <a href="#join">Join Us</a>
+            <a href="#partners">Partners</a>
+            <a href="#officers">Team</a>
         </div>
-        <button onclick="openEnlistModal()" class="nav-btn" style="border:none; cursor:pointer;">Enlist Now</button>
+        <div style="display:flex;align-items:center;gap:10px;">
+            <button onclick="openEnlistModal()" class="nav-btn" style="border:none;cursor:pointer;">Enlist Now</button>
+            <button class="nav-menu-btn" id="nav-menu-btn" onclick="toggleSidebar()" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
     </nav>
 
-    <!-- ═══════════════════════ HERO ══════════════════════════ -->
+    <!-- ═══════════════════════ HERO ═════════════════════════════ -->
     <section id="hero">
-        <!-- Dot Grid Canvas (see js/dotgrid.js) -->
-        <div id="dot-grid-wrap" class="dot-grid-wrap">
-            <canvas id="dot-grid-canvas" class="dot-grid-canvas"></canvas>
-        </div>
         <div class="hero-bg"></div>
         <div class="stars"></div>
         <div class="road-glow"></div>
-        <div class="light-beam"></div>
-        <div class="light-beam"></div>
-        <div class="light-beam"></div>
+        <!-- convoy replaces light-beams -->
+        <canvas id="convoy-canvas" style="position:absolute;bottom:0;left:0;width:100%;height:130px;z-index:2;pointer-events:none;"></canvas>
 
         <div class="hero-content">
-            <div class="hero-badge">
-                <div class="dot"></div>
-                Now Recruiting · Drivers Wanted
-            </div>
-            <h1>
-                NATIONAL<br>
-                <span class="highlight">MOBILITY</span><br>
-                COMMAND
-            </h1>
-            <p class="hero-sub">
-                Elite virtual trucking. Precision logistics across the nation.
-                Where every mile counts and every driver is a professional.
-            </p>
+            <div class="hero-badge"><div class="dot"></div>Now Recruiting · Drivers Wanted</div>
+            <h1>NATIONAL<br><span class="highlight">MOBILITY</span><br>COMMAND</h1>
+            <p class="hero-sub">Elite virtual trucking. Precision logistics across the nation. Where every mile counts and every driver is a professional.</p>
             <div class="hero-actions">
-                <button onclick="openEnlistModal()" class="btn-primary">
-                    🚛 Join the Convoy
-                </button>
-                <a href="#about" class="btn-secondary">
-                    Learn More →
-                </a>
+                <button onclick="openEnlistModal()" class="btn-primary">🚛 Join the Convoy</button>
+                <a href="#about" class="btn-secondary">Learn More →</a>
             </div>
         </div>
 
         <div class="hero-stats">
-            <div class="stat-card">
-                <div class="stat-num" id="hero-stat-enlisted">--</div>
-                <div class="stat-lbl">Enlisted Drivers</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-num" id="hero-stat-miles">--</div>
-                <div class="stat-lbl">KM Delivered</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-num">100%</div>
-                <div class="stat-lbl">Commitment</div>
-            </div>
+            <div class="stat-card"><div class="stat-num" id="hero-stat-enlisted">--</div><div class="stat-lbl">Enlisted Drivers</div></div>
+            <div class="stat-card"><div class="stat-num" id="hero-stat-miles">--</div><div class="stat-lbl">KM Delivered</div></div>
+            <div class="stat-card"><div class="stat-num">100%</div><div class="stat-lbl">Commitment</div></div>
         </div>
     </section>
 
-    <!-- ═══════════════════════ ABOUT ═════════════════════════ -->
+    <!-- ═══════════════════════ ABOUT ══════════════════════════════ -->
     <section id="about">
         <div class="about-grid">
             <div class="about-visual reveal">
-                <img src="Assets/team.png" alt="NMC Team"
-                    style="width:100%; height:100%; object-fit:cover; position:absolute; inset:0;">
-                <div
-                    style="position:absolute; inset:0; background:linear-gradient(to top, rgba(10,22,40,.85) 0%, rgba(10,22,40,.0) 50%); pointer-events:none;">
-                </div>
-                <div class="about-visual-label"
-                    style="position:absolute; bottom:24px; left:0; right:0; text-align:center; z-index:1;">NMC Team ·
-                    National Mobility Command</div>
+                <img src="Assets/team.png" alt="NMC Team" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
+                <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,22,40,.85) 0%,rgba(10,22,40,0) 50%);pointer-events:none;"></div>
+                <div class="about-visual-label" style="position:absolute;bottom:24px;left:0;right:0;text-align:center;z-index:1;">NMC Team · National Mobility Command</div>
             </div>
-
             <div>
                 <div class="section-tag reveal">Who We Are</div>
                 <h2 class="section-title reveal">Built for the<br><span style="color:var(--gold)">Open Road</span></h2>
-                <p class="section-sub reveal">
-                    National Mobility Command is not just another VTC — we are a precision-run logistics command built
-                    around automation, identity, and a community that feels like home.
-                </p>
-
+                <p class="section-sub reveal">National Mobility Command is not just another VTC — we are a precision-run logistics command built around automation, identity, and a community that feels like home.</p>
                 <div class="about-features">
-                    <div class="feat-item reveal reveal-delay-1">
-                        <div class="feat-icon">🎨</div>
-                        <div>
-                            <div class="feat-title">Full Skin Customisation</div>
-                            <div class="feat-desc">Request literally anything on your livery. Clean, serious designs
-                                with a unified NMC visual identity — built exactly the way you want it.</div>
-                        </div>
-                    </div>
-                    <div class="feat-item reveal reveal-delay-2">
-                        <div class="feat-icon">🤖</div>
-                        <div>
-                            <div class="feat-title">AI-Automated 24×7 Support</div>
-                            <div class="feat-desc">No moderators, no waiting. Instant AI support, an AI-driven career
-                                system, and fully automated economy — post job logs, earn money, buy skins, gamble
-                                with other players.</div>
-                        </div>
-                    </div>
-                    <div class="feat-item reveal reveal-delay-3">
-                        <div class="feat-icon">😌</div>
-                        <div>
-                            <div class="feat-title">Stress-Free by Design</div>
-                            <div class="feat-desc">No unnecessary channels, bots, or noise. NMC is clean, minimal, and
-                                welcoming — a place to chill after a long day, for players aged 15 to 40+ from
-                                all around the world.</div>
-                        </div>
-                    </div>
-                    <div class="feat-item reveal reveal-delay-1">
-                        <div class="feat-icon">📸</div>
-                        <div>
-                            <div class="feat-title">Creative Community</div>
-                            <div class="feat-desc">We guide members on how to take great screenshots, edit photos, and
-                                create skins. NMC is also the creator of the UVS (Unified VTC System), used by
-                                APEX, NMC, TML, and ECL players for cross-VTC competition.</div>
-                        </div>
-                    </div>
+                    <div class="feat-item reveal reveal-delay-1"><div class="feat-icon">🎨</div><div><div class="feat-title">Full Skin Customisation</div><div class="feat-desc">Request literally anything on your livery. Clean, serious designs with a unified NMC visual identity — built exactly the way you want it.</div></div></div>
+                    <div class="feat-item reveal reveal-delay-2"><div class="feat-icon">🤖</div><div><div class="feat-title">AI-Automated 24×7 Support</div><div class="feat-desc">No moderators, no waiting. Instant AI support, an AI-driven career system, and fully automated economy — post job logs, earn money, buy skins, gamble with other players.</div></div></div>
+                    <div class="feat-item reveal reveal-delay-3"><div class="feat-icon">😌</div><div><div class="feat-title">Stress-Free by Design</div><div class="feat-desc">No unnecessary channels, bots, or noise. NMC is clean, minimal, and welcoming — a place to chill after a long day, for players aged 15 to 40+ from all around the world.</div></div></div>
+                    <div class="feat-item reveal reveal-delay-1"><div class="feat-icon">📸</div><div><div class="feat-title">Creative Community</div><div class="feat-desc">We guide members on how to take great screenshots, edit photos, and create skins. NMC is also the creator of the UVS (Unified VTC System), used by APEX, NMC, TML, and ECL players for cross-VTC competition.</div></div></div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ═══════════════════════ GALLERY TEASER ══════════════════ -->
-    <section id="gallery" style="background:var(--navy2); text-align:center;">
-        <div class="section-tag reveal">In the Field</div>
-        <h2 class="section-title reveal">Media Gallery</h2>
-        <p class="section-sub reveal" style="margin:0 auto 40px;">Real operations. Real moments. Captured on the road by NMC drivers.</p>
-        <a href="gallery.html" class="btn-primary reveal" style="display:inline-flex;">
-            📸 Browse the Gallery →
-        </a>
-    </section>
-
-    <!-- ═══════════════════════ DIVISIONS ═════════════════════ -->
+    <!-- ═══════════════════════ DIVISIONS ══════════════════════════ -->
     <section id="divisions">
         <div class="section-tag reveal">Our Structure</div>
         <h2 class="section-title reveal">Specialized Divisions</h2>
-        <p class="section-sub reveal">NMC operates through highly specialized divisions to ensure operational
-            superiority across all logistics domains.</p>
-
+        <p class="section-sub reveal">NMC operates through highly specialized divisions to ensure operational superiority across all logistics domains.</p>
         <div class="divisions-grid">
             <div class="division-card reveal reveal-delay-1">
                 <div class="division-title">RapidLine</div>
-                <div class="division-desc">Focuses on time-critical, high-speed logistics and express transportation.
-                    RapidLine ensures that crucial cargo reaches its destination exactly when needed, with zero margin
-                    for error.</div>
+                <div class="division-desc">Focuses on time-critical, high-speed logistics and express transportation. RapidLine ensures that crucial cargo reaches its destination exactly when needed, with zero margin for error.</div>
             </div>
             <div class="division-card reveal reveal-delay-2">
                 <div class="division-title">High-Value Operations (HVO)</div>
-                <div class="division-desc">The elite branch dealing with securely transporting top-secret, heavily
-                    guarded, and multi-million dollar assets. HVO drivers are hand-picked for their flawless records and
-                    reliability.</div>
+                <div class="division-desc">The elite branch dealing with securely transporting top-secret, heavily guarded, and multi-million dollar assets. HVO drivers are hand-picked for their flawless records and reliability.</div>
             </div>
         </div>
     </section>
 
-    <!-- ═══════════════════════ FLEET ═════════════════════════ -->
+    <!-- ═══════════════════════ FLEET ═══════════════════════════════ -->
     <section id="fleet">
         <div class="section-tag reveal">Our Vehicles</div>
         <h2 class="section-title reveal">The Fleet</h2>
-        <p class="section-sub reveal">Every rig in the National Mobility Command fleet is maintained to peak condition
-            and assigned to the right job.</p>
-
+        <p class="section-sub reveal">Every rig in the National Mobility Command fleet is maintained to peak condition and assigned to the right job.</p>
         <div class="fleet-grid">
-            <div class="fleet-card reveal reveal-delay-1">
-                <div class="fleet-truck-icon">🚛</div>
-                <div class="fleet-name">Class 8 Semi</div>
-                <div class="fleet-tag">Standard</div>
-            </div>
-            <div class="fleet-card reveal reveal-delay-2">
-                <div class="fleet-truck-icon">🚚</div>
-                <div class="fleet-name">Tanker Rig</div>
-                <div class="fleet-tag">Liquid Haul</div>
-            </div>
-            <div class="fleet-card reveal reveal-delay-3">
-                <div class="fleet-truck-icon">🚜</div>
-                <div class="fleet-name">Lowboy Trailer</div>
-                <div class="fleet-tag">Oversized</div>
-            </div>
-            <div class="fleet-card reveal">
-                <div class="fleet-truck-icon">🧊</div>
-                <div class="fleet-name">Reefer Unit</div>
-                <div class="fleet-tag">Refrigerated</div>
-            </div>
+            <div class="fleet-card reveal reveal-delay-1"><div class="fleet-truck-icon">🚛</div><div class="fleet-name">Class 8 Semi</div><div class="fleet-tag">Standard</div></div>
+            <div class="fleet-card reveal reveal-delay-2"><div class="fleet-truck-icon">🚚</div><div class="fleet-name">Tanker Rig</div><div class="fleet-tag">Liquid Haul</div></div>
+            <div class="fleet-card reveal reveal-delay-3"><div class="fleet-truck-icon">🚜</div><div class="fleet-name">Lowboy Trailer</div><div class="fleet-tag">Oversized</div></div>
+            <div class="fleet-card reveal"><div class="fleet-truck-icon">🧊</div><div class="fleet-name">Reefer Unit</div><div class="fleet-tag">Refrigerated</div></div>
         </div>
     </section>
 
-    <!-- ═══════════════════════ 360° TEASER ════════════════════ -->
-    <section id="showcase360" style="background:var(--navy); text-align:center;">
-        <div class="section-tag reveal">Interactive</div>
-        <h2 class="section-title reveal">360° Truck <span style="color:var(--gold)">Showcase</span></h2>
-        <p class="section-sub reveal" style="margin:0 auto 40px;">Explore any angle of our flagship truck — drag, scrub, and spin it around in full 360°.</p>
-        <a href="360.html" class="btn-primary reveal" style="display:inline-flex;">
-            🔄 Open 360° Viewer →
-        </a>
-    </section>
-
-    <!-- hidden placeholder so JS doesn't error on IDs it expects on index -->
-    <div style="display:none;" id="v360-stage"></div>
-
-    <!-- ═══════════════════════ PARTNERS TEASER ══════════════════ -->
-    <section id="partners" style="background:var(--navy2); text-align:center;">
+    <!-- ═══════════════════════ PARTNERS (FULL) ════════════════════ -->
+    <section id="partners">
         <div class="section-tag reveal">Trusted Partners</div>
         <h2 class="section-title reveal">Our Partners</h2>
-        <p class="section-sub reveal" style="margin:0 auto 40px;">We collaborate with the finest virtual trucking communities and logistics organizations across the network.</p>
-        <a href="partners.html" class="btn-primary reveal" style="display:inline-flex;">
-            🤝 View All Partners →
-        </a>
+        <p class="section-sub reveal">We collaborate with the finest virtual trucking communities and logistics organizations across the network.</p>
+
+        <div id="partners-loading" class="partners-loading">
+            <div class="mini-spinner"></div>
+            <span>Loading partners…</span>
+        </div>
+        <div class="partners-grid" id="partners-grid" style="display:none;"></div>
+        <div class="partners-empty" id="partners-empty" style="display:none;">No partners listed yet. Use <code>/addpartner</code> to add.</div>
+
     </section>
 
-
-
-    <!-- ═══════════════════════ OFFICERS ═══════════════════════ -->
-    <section id="officers" style="background: linear-gradient(180deg, #0a1628 0%, var(--navy) 100%);">
+    <!-- ═══════════════════════ OFFICERS ════════════════════════════ -->
+    <section id="officers" style="background:transparent;">
         <div class="section-tag reveal">Command Structure</div>
         <h2 class="section-title reveal">NMC Team</h2>
         <p class="section-sub reveal">The team driving NMC forward with discipline and precision.</p>
         <div class="members-grid officers-grid" id="officers-grid">
-            <div class="member-empty" id="officers-empty">No officers added yet. Use <code>/adddriver</code> to add
-                officers.</div>
+            <div class="member-empty" id="officers-empty">No officers added yet. Use <code>/adddriver</code> to add officers.</div>
         </div>
     </section>
 
-    <!-- ═══════════════════════ STATS ═════════════════════════ -->
-    <section id="stats">
-        <div class="stats-row" style="row-gap: 60px;">
-            <div class="stat-big reveal reveal-delay-1">
-                <div class="num" id="stat-enlisted">--</div>
-                <div class="lbl">Enlisted Drivers</div>
-            </div>
-            <div class="stat-big reveal reveal-delay-2">
-                <div class="num" id="stat-miles">--</div>
-                <div class="lbl">KM Delivered</div>
-            </div>
-            <div class="stat-big reveal reveal-delay-3">
-                <div class="num" id="stat-driving-time">--</div>
-                <div class="lbl">Driving Time (hrs)</div>
-            </div>
-            <div class="stat-big reveal reveal-delay-1">
-                <div class="num" id="stat-net-worth">--</div>
-                <div class="lbl">Net Worth ($)</div>
-            </div>
-            <div class="stat-big reveal reveal-delay-2">
-                <div class="num">100%</div>
-                <div class="lbl">Commitment</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ═══════════════════════ LEADERBOARD ═════════════════════ -->
-    <section id="leaderboard" style="background: var(--navy);">
-        <div class="section-tag reveal">NMC Rankings</div>
-        <h2 class="section-title reveal">Driver Leaderboards</h2>
-        <p class="section-sub reveal">Live top-5 rankings across all NMC drivers. Updated in real time.</p>
-
-        <div class="lb-strip" id="lb-strip">
-            <div class="lb-card reveal">
-                <div class="lb-title">🏆 Best Drivers</div>
-                <div class="lb-subtitle">By clean deliveries</div>
-                <div class="lb-list" id="lb-clean">
-                    <div class="lb-skeleton"></div>
-                    <div class="lb-skeleton"></div>
-                    <div class="lb-skeleton"></div>
-                </div>
-            </div>
-            <div class="lb-card reveal reveal-delay-1">
-                <div class="lb-title">📍 Distance</div>
-                <div class="lb-subtitle">Total km driven</div>
-                <div class="lb-list" id="lb-distance">
-                    <div class="lb-skeleton"></div>
-                    <div class="lb-skeleton"></div>
-                    <div class="lb-skeleton"></div>
-                </div>
-            </div>
-            <div class="lb-card reveal reveal-delay-2">
-                <div class="lb-title">⏱️ Drive Time</div>
-                <div class="lb-subtitle">Total hours on road</div>
-                <div class="lb-list" id="lb-time">
-                    <div class="lb-skeleton"></div>
-                    <div class="lb-skeleton"></div>
-                    <div class="lb-skeleton"></div>
-                </div>
-            </div>
-            <div class="lb-card reveal reveal-delay-1">
-                <div class="lb-title">⭐ Level</div>
-                <div class="lb-subtitle">Current driver level</div>
-                <div class="lb-list" id="lb-level">
-                    <div class="lb-skeleton"></div>
-                    <div class="lb-skeleton"></div>
-                    <div class="lb-skeleton"></div>
-                </div>
-            </div>
-            <div class="lb-card reveal reveal-delay-2">
-                <div class="lb-title">⚡ Speed</div>
-                <div class="lb-subtitle">Best avg speed (km/h)</div>
-                <div class="lb-list" id="lb-speed">
-                    <div class="lb-skeleton"></div>
-                    <div class="lb-skeleton"></div>
-                    <div class="lb-skeleton"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ═══════════════════════ JOIN ══════════════════════════ -->
-    <section id="join">
-        <div class="join-wrapper">
-            <div class="join-card reveal">
-                <div class="section-tag">Recruitment Open</div>
-                <h2>JOIN THE<br><span style="color:var(--gold)">COMMAND</span></h2>
-                <p>We're always looking for dedicated virtual drivers ready to commit to the mission. Whether you're a
-                    rookie or a veteran hauler — there's a seat in the NMC for you.</p>
-                <div class="requirements">
-                    <div class="req-item"><span class="check">✔</span> Any experience level</div>
-                    <div class="req-item"><span class="check">✔</span> Trucking sim game</div>
-                    <div class="req-item"><span class="check">✔</span> Active &amp; dedicated</div>
-                    <div class="req-item"><span class="check">✔</span> Team player</div>
-                </div>
-                <button onclick="openEnlistModal()" class="btn-primary" style="font-size:16px; padding:18px 48px;">
-                    🚛 Apply Now — It's Free
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <!-- ═══════════════════════ FOOTER ════════════════════════ -->
+    <!-- ═══════════════════════ FOOTER ══════════════════════════════ -->
     <footer>
         <div class="footer-logo">
-            <img src="Assets/NMC_logo.png" alt="NMC Logo" style="width: 34px; height: 34px; object-fit: contain;">
+            <img src="Assets/NMC_logo.png" alt="NMC Logo" style="width:34px;height:34px;object-fit:contain;">
             <span>National Mobility Command</span>
         </div>
         <div class="footer-links" style="flex-wrap:wrap;">
@@ -389,124 +409,118 @@
             <a href="gallery.html">Gallery</a>
             <a href="#fleet">Fleet</a>
             <a href="360.html">360° View</a>
-            <a href="partners.html">Partners</a>
-            <a href="#leaderboard">Leaderboard</a>
-            <a href="#join">Join</a>
+            <a href="#partners">Partners</a>
+            <a href="leaderboard.html">Leaderboard</a>
         </div>
-        <div class="footer-contact"
-            style="font-size:13px; color:var(--muted); display:flex; gap:20px; flex-wrap:wrap; align-items:center;">
-            <a href="https://www.instagram.com/nmc.logistics.eu" target="_blank" class="footer-social-link"
-                title="Instagram">
-                <img src="Assets/Instagram_logo_2022.svg" alt="Instagram"
-                    style="width:22px;height:22px;object-fit:contain;filter:brightness(.8);transition:filter .2s;"
-                    onmouseover="this.style.filter='brightness(1.2)'" onmouseout="this.style.filter='brightness(.8)'">
-                <span>Instagram</span>
-            </a>
-            <a href="https://www.facebook.com/people/National-Mobility-Command/61561385883344/" target="_blank"
-                class="footer-social-link" title="Facebook">
-                <img src="Assets/2023_Facebook_icon.svg" alt="Facebook"
-                    style="width:22px;height:22px;object-fit:contain;filter:brightness(.8);transition:filter .2s;"
-                    onmouseover="this.style.filter='brightness(1.2)'" onmouseout="this.style.filter='brightness(.8)'">
-                <span>Facebook</span>
-            </a>
-            <a href="https://www.youtube.com/@nmc.logistics" target="_blank" class="footer-social-link" title="YouTube">
-                <img src="Assets/YouTube_2024.svg" alt="YouTube"
-                    style="width:22px;height:22px;object-fit:contain;filter:brightness(.8);transition:filter .2s;"
-                    onmouseover="this.style.filter='brightness(1.2)'" onmouseout="this.style.filter='brightness(.8)'">
-                <span>YouTube</span>
-            </a>
-            <a href="https://discord.gg/qwRUQ6msT8" target="_blank" class="footer-social-link" title="Discord">
-                <img src="Assets/Discord_logo.svg" alt="Discord"
-                    style="width:22px;height:22px;object-fit:contain;filter:brightness(.8);transition:filter .2s;"
-                    onmouseover="this.style.filter='brightness(1.2)'" onmouseout="this.style.filter='brightness(.8)'">
-                <span>Discord</span>
-            </a>
-            <a href="mailto:nmc.logistics.eu@gmail.com" class="footer-social-link" title="Email">
-                <img src="Assets/Gmail_icon_(2020).svg" alt="Gmail"
-                    style="width:22px;height:22px;object-fit:contain;filter:brightness(.8);transition:filter .2s;"
-                    onmouseover="this.style.filter='brightness(1.2)'" onmouseout="this.style.filter='brightness(.8)'">
-                <span>nmc.logistics.eu@gmail.com</span>
-            </a>
+        <div class="footer-contact" style="font-size:13px;color:var(--muted);display:flex;gap:20px;flex-wrap:wrap;align-items:center;">
+            <a href="https://www.instagram.com/nmc.logistics.eu" target="_blank" class="footer-social-link" title="Instagram"><img src="Assets/Instagram_logo_2022.svg" alt="Instagram" style="width:22px;height:22px;object-fit:contain;filter:brightness(.8);transition:filter .2s;" onmouseover="this.style.filter='brightness(1.2)'" onmouseout="this.style.filter='brightness(.8)'"><span>Instagram</span></a>
+            <a href="https://www.facebook.com/people/National-Mobility-Command/61561385883344/" target="_blank" class="footer-social-link" title="Facebook"><img src="Assets/2023_Facebook_icon.svg" alt="Facebook" style="width:22px;height:22px;object-fit:contain;filter:brightness(.8);transition:filter .2s;" onmouseover="this.style.filter='brightness(1.2)'" onmouseout="this.style.filter='brightness(.8)'"><span>Facebook</span></a>
+            <a href="https://www.youtube.com/@nmc.logistics" target="_blank" class="footer-social-link" title="YouTube"><img src="Assets/YouTube_2024.svg" alt="YouTube" style="width:22px;height:22px;object-fit:contain;filter:brightness(.8);transition:filter .2s;" onmouseover="this.style.filter='brightness(1.2)'" onmouseout="this.style.filter='brightness(.8)'"><span>YouTube</span></a>
+            <a href="https://discord.gg/qwRUQ6msT8" target="_blank" class="footer-social-link" title="Discord"><img src="Assets/Discord_logo.svg" alt="Discord" style="width:22px;height:22px;object-fit:contain;filter:brightness(.8);transition:filter .2s;" onmouseover="this.style.filter='brightness(1.2)'" onmouseout="this.style.filter='brightness(.8)'"><span>Discord</span></a>
+            <a href="mailto:nmc.logistics.eu@gmail.com" class="footer-social-link" title="Email"><img src="Assets/Gmail_icon_(2020).svg" alt="Gmail" style="width:22px;height:22px;object-fit:contain;filter:brightness(.8);transition:filter .2s;" onmouseover="this.style.filter='brightness(1.2)'" onmouseout="this.style.filter='brightness(.8)'"><span>nmc.logistics.eu@gmail.com</span></a>
         </div>
         <div class="footer-copy">© 2026 National Mobility Command. All rights reserved.</div>
     </footer>
 
-    <!-- ═══════════════════════ MODAL ═════════════════════════ -->
+    <!-- ═══════════════════════ MODAL ════════════════════════════════ -->
     <div id="enlistModal" class="modal-overlay">
         <div class="modal-content">
             <button class="modal-close" onclick="closeEnlistModal()">&times;</button>
             <div class="modal-title">Enlistment Application</div>
-            <p style="color:var(--muted); font-size:14px; margin-bottom:24px; line-height:1.6;">
-                Ready to join the Command? Fill out this quick questionnaire to start your application process. Upon
-                submission, you'll be directed to our recruitment server.
-            </p>
+            <p style="color:var(--muted);font-size:14px;margin-bottom:24px;line-height:1.6;">Ready to join the Command? Fill out this quick questionnaire to start your application process. Upon submission, you'll be directed to our recruitment server.</p>
             <form onsubmit="submitApplication(event)" id="enlistForm">
-                <div class="form-group">
-                    <label class="form-label">Your Discord Username <span
-                            style="color:var(--muted);font-weight:400;">(e.g. john#1234 or john)</span></label>
-                    <input class="form-input" id="f-username" placeholder="Your Discord username" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Will you be active?</label>
-                    <select class="form-select" id="f-active" required>
-                        <option value="">Select an option</option>
-                        <option value="Yes">Yes</option>
-                        <option value="No">No</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Will you be loyal and obey the Commander?</label>
-                    <select class="form-select" id="f-loyal" required>
-                        <option value="">Select an option</option>
-                        <option value="Yes">Yes</option>
-                        <option value="No">No</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Give your introduction in brief!</label>
-                    <textarea class="form-textarea" id="f-intro" placeholder="Tell us about yourself..."
-                        required></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">What makes you better than other applicants?</label>
-                    <textarea class="form-textarea" id="f-better" placeholder="Your specific skills or traits..."
-                        required></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Why did you choose NMC over other VTCs?</label>
-                    <textarea class="form-textarea" id="f-whynmc" placeholder="Your reason for joining..."
-                        required></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Do you accept that the Commander has final authority in all company
-                        decisions, including member removal?</label>
-                    <select class="form-select" id="f-authority" required>
-                        <option value="">Select an option</option>
-                        <option value="Yes">Yes, I accept</option>
-                        <option value="No">No</option>
-                    </select>
-                </div>
-                <button type="submit" id="enlistSubmitBtn" class="btn-primary"
-                    style="width:100%; justify-content:center; margin-top:10px;">
-                    Submit Application &amp; Join Discord
-                </button>
+                <div class="form-group"><label class="form-label">Your Discord Username <span style="color:var(--muted);font-weight:400;">(e.g. john#1234 or john)</span></label><input class="form-input" id="f-username" placeholder="Your Discord username" required></div>
+                <div class="form-group"><label class="form-label">Will you be active?</label><select class="form-select" id="f-active" required><option value="">Select an option</option><option value="Yes">Yes</option><option value="No">No</option></select></div>
+                <div class="form-group"><label class="form-label">Will you be loyal and obey the Commander?</label><select class="form-select" id="f-loyal" required><option value="">Select an option</option><option value="Yes">Yes</option><option value="No">No</option></select></div>
+                <div class="form-group"><label class="form-label">Give your introduction in brief!</label><textarea class="form-textarea" id="f-intro" placeholder="Tell us about yourself..." required></textarea></div>
+                <div class="form-group"><label class="form-label">What makes you better than other applicants?</label><textarea class="form-textarea" id="f-better" placeholder="Your specific skills or traits..." required></textarea></div>
+                <div class="form-group"><label class="form-label">Why did you choose NMC over other VTCs?</label><textarea class="form-textarea" id="f-whynmc" placeholder="Your reason for joining..." required></textarea></div>
+                <div class="form-group"><label class="form-label">Do you accept that the Commander has final authority in all company decisions, including member removal?</label><select class="form-select" id="f-authority" required><option value="">Select an option</option><option value="Yes">Yes, I accept</option><option value="No">No</option></select></div>
+                <button type="submit" id="enlistSubmitBtn" class="btn-primary" style="width:100%;justify-content:center;margin-top:10px;">Submit Application &amp; Join Discord</button>
             </form>
         </div>
     </div>
 
-    <!-- Supabase JS CDN — async so it never blocks page rendering -->
+    <!-- hidden placeholder so JS doesn't error on IDs it expects -->
+    <div style="display:none;" id="v360-stage"></div>
+
     <script async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <!-- App logic (Supabase, modal, gallery, leaderboard, stats, reveal, nav) -->
     <script src="js/app.js"></script>
-
-    <!-- 360° Truck Showcase -->
     <script src="js/viewer360.js"></script>
-
-
-    <!-- Dot grid interactive background -->
     <script src="js/dotgrid.js"></script>
 
-</body>
+    <script>
+    /* ── Sidebar ─────────────────────────────────────── */
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    const menuBtn = document.getElementById('nav-menu-btn');
 
+    function toggleSidebar(){
+        const open = sidebar.classList.contains('open');
+        open ? closeSidebar() : openSidebar();
+    }
+    function openSidebar(){
+        sidebar.classList.add('open');
+        overlay.classList.add('open');
+        menuBtn.classList.add('open');
+        document.body.style.overflow='hidden';
+    }
+    function closeSidebar(){
+        sidebar.classList.remove('open');
+        overlay.classList.remove('open');
+        menuBtn.classList.remove('open');
+        document.body.style.overflow='';
+    }
+    overlay.addEventListener('click', closeSidebar);
+    document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeSidebar(); });
+    window.closeSidebar = closeSidebar;
+
+    /* ── Partners ─────────────────────────────────────── */
+    const SUPABASE_URL = 'https://aijrvldtilncnclvvles.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpanJ2bGR0aWxuY25jbHZ2bGVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1MDQ2MjgsImV4cCI6MjA4MTA4MDYyOH0.ASKDuChVVlCzW7cnfUJQ2TbPUx90HPKZ60c6o7-s_AM';
+
+    function waitForSb(cb, attempt=0){
+        if(typeof window.supabase !== 'undefined') cb();
+        else if(attempt < 30) setTimeout(()=>waitForSb(cb, attempt+1), 200);
+    }
+
+    waitForSb(async ()=>{
+        const grid   = document.getElementById('partners-grid');
+        const empty  = document.getElementById('partners-empty');
+        const loader = document.getElementById('partners-loading');
+        try {
+            const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            const { data, error } = await sb.from('partners').select('*').order('created_at', {ascending:false});
+            loader.style.display='none';
+            if(error || !data || !data.length){ empty.style.display='block'; return; }
+            grid.style.display='grid';
+            data.forEach(p=>{
+                const card = document.createElement('div');
+                card.className = 'partner-card reveal';
+                card.innerHTML = `
+                    <div class="partner-logo-wrap">
+                        ${p.logo_url
+                            ? `<img src="${p.logo_url}" alt="${p.name||''}">`
+                            : `<div class="partner-logo-placeholder">🤝</div>`}
+                    </div>
+                    <div class="partner-info">
+                        <div class="partner-name">${p.name||'Partner'}</div>
+                        <div class="partner-type">${p.type||'VTC'}</div>
+                        ${p.member_count ? `<div class="partner-members">👥 ${p.member_count} members</div>` : ''}
+                    </div>
+                    ${p.discord_invite ? `<a href="${p.discord_invite}" target="_blank" class="partner-discord">Join Discord →</a>` : ''}
+                `;
+                grid.appendChild(card);
+            });
+            // trigger reveal on newly added cards
+            if(window._revealObserver) grid.querySelectorAll('.reveal').forEach(el=>window._revealObserver.observe(el));
+        } catch(e){
+            console.warn('[Partners]', e);
+            loader.style.display='none';
+            empty.style.display='block';
+        }
+    });
+    </script>
+    <script src="js/convoy.js"></script>
+</body>
 </html>

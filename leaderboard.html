@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard &amp; Stats | National Mobility Command</title>
+    <meta name="description" content="Live NMC driver rankings — top performers by deliveries, distance, drive time, level, and speed.">
+    <meta name="theme-color" content="#e8a020">
+    <link rel="icon" type="image/png" href="Assets/NMC_logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+
+    <style>
+    body { background: #06090f; }
+
+    /* ── Hero ─────────────────────────────── */
+    .lb-hero {
+        padding: 110px 60px 56px;
+        text-align: center;
+        background: radial-gradient(ellipse at 50% 0%, rgba(232,160,32,.10) 0%, transparent 65%);
+        border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .lb-hero .tag { display:inline-block; font-size:11px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:#e8a020; margin-bottom:12px; }
+    .lb-hero h1 {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: clamp(2.8rem, 7vw, 5rem);
+        letter-spacing: 3px; line-height: 1;
+        background: linear-gradient(90deg, #fff 40%, #e8a020 100%);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        margin-bottom: 10px;
+    }
+    .lb-hero p { color: #6b7280; font-size: 15px; }
+
+    /* ── Stats overview ──────────────────── */
+    .stats-overview {
+        display: flex; gap: 20px; flex-wrap: wrap;
+        justify-content: center;
+        max-width: 1100px; margin: 60px auto 0;
+        padding: 0 40px;
+    }
+    .stat-overview-card {
+        flex: 1; min-width: 160px;
+        background: rgba(255,255,255,.09);
+        border: 1px solid rgba(255,255,255,.12);
+        border-radius: 14px; padding: 28px 20px;
+        text-align: center;
+        transition: transform .3s, box-shadow .3s;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+    .stat-overview-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,.4); }
+    .stat-overview-card .num { font-family: 'Bebas Neue', sans-serif; font-size: 2.6rem; color: #e8a020; letter-spacing: 1px; }
+    .stat-overview-card .lbl { font-size: 12px; color: #6b7280; letter-spacing: .08em; text-transform: uppercase; margin-top: 4px; }
+
+    /* ── Leaderboard tables ──────────────── */
+    .lb-section {
+        max-width: 1200px; margin: 60px auto 100px;
+        padding: 0 40px;
+    }
+
+    @media (max-width: 720px) {
+        .lb-hero { padding: 100px 24px 44px; }
+        .stats-overview { padding: 0 16px; }
+        .lb-section { padding: 0 16px; margin-top: 40px; }
+    }
+    </style>
+</head>
+<body>
+
+    <!-- ═══ NAV ══════════════════════════════════════════ -->
+    <nav>
+        <div class="nav-logo">
+            <a href="index.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;">
+                <img src="Assets/NMC_logo.png" alt="NMC Logo"
+                    style="width:42px;height:42px;object-fit:contain;filter:drop-shadow(0 0 10px rgba(232,160,32,0.4));">
+                <span>National Mobility Command</span>
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">← Home</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="360.html">360° View</a>
+            <a href="leaderboard.html" style="color:var(--gold);">Leaderboard</a>
+        </div>
+        <button onclick="openEnlistModal()" class="nav-btn" style="border:none;cursor:pointer;">Enlist Now</button>
+    </nav>
+
+    <!-- ═══ HERO ══════════════════════════════════════════ -->
+    <div class="lb-hero">
+        <div class="tag">NMC Rankings</div>
+        <h1>Leaderboard &amp; Stats</h1>
+        <p>Live top-5 rankings across all NMC drivers — updated in real time.</p>
+    </div>
+
+    <!-- ═══ STATS OVERVIEW ═══════════════════════════════ -->
+    <div class="stats-overview">
+        <div class="stat-overview-card reveal">
+            <div class="num" id="stat-enlisted">--</div>
+            <div class="lbl">Enlisted Drivers</div>
+        </div>
+        <div class="stat-overview-card reveal reveal-delay-1">
+            <div class="num" id="stat-miles">--</div>
+            <div class="lbl">KM Delivered</div>
+        </div>
+        <div class="stat-overview-card reveal reveal-delay-2">
+            <div class="num" id="stat-driving-time">--</div>
+            <div class="lbl">Driving Hours</div>
+        </div>
+        <div class="stat-overview-card reveal reveal-delay-3">
+            <div class="num" id="stat-net-worth">--</div>
+            <div class="lbl">Net Worth ($)</div>
+        </div>
+        <div class="stat-overview-card reveal reveal-delay-1">
+            <div class="num">100%</div>
+            <div class="lbl">Commitment</div>
+        </div>
+    </div>
+
+    <!-- ═══ LEADERBOARD TABLES ══════════════════════════ -->
+    <div class="lb-section">
+        <div class="lb-strip" id="lb-strip">
+            <div class="lb-card reveal">
+                <div class="lb-title">🏆 Best Drivers</div>
+                <div class="lb-subtitle">By clean deliveries</div>
+                <div class="lb-list" id="lb-clean">
+                    <div class="lb-skeleton"></div><div class="lb-skeleton"></div><div class="lb-skeleton"></div>
+                </div>
+            </div>
+            <div class="lb-card reveal reveal-delay-1">
+                <div class="lb-title">📍 Distance</div>
+                <div class="lb-subtitle">Total km driven</div>
+                <div class="lb-list" id="lb-distance">
+                    <div class="lb-skeleton"></div><div class="lb-skeleton"></div><div class="lb-skeleton"></div>
+                </div>
+            </div>
+            <div class="lb-card reveal reveal-delay-2">
+                <div class="lb-title">⏱️ Drive Time</div>
+                <div class="lb-subtitle">Total hours on road</div>
+                <div class="lb-list" id="lb-time">
+                    <div class="lb-skeleton"></div><div class="lb-skeleton"></div><div class="lb-skeleton"></div>
+                </div>
+            </div>
+            <div class="lb-card reveal reveal-delay-1">
+                <div class="lb-title">⭐ Level</div>
+                <div class="lb-subtitle">Current driver level</div>
+                <div class="lb-list" id="lb-level">
+                    <div class="lb-skeleton"></div><div class="lb-skeleton"></div><div class="lb-skeleton"></div>
+                </div>
+            </div>
+            <div class="lb-card reveal reveal-delay-2">
+                <div class="lb-title">⚡ Speed</div>
+                <div class="lb-subtitle">Best avg speed (km/h)</div>
+                <div class="lb-list" id="lb-speed">
+                    <div class="lb-skeleton"></div><div class="lb-skeleton"></div><div class="lb-skeleton"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ MODAL ═════════════════════════════════════════ -->
+    <div id="enlistModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeEnlistModal()">&times;</button>
+            <div class="modal-title">Enlistment Application</div>
+            <p style="color:var(--muted);font-size:14px;margin-bottom:24px;line-height:1.6;">Ready to join the Command? Fill out this quick questionnaire.</p>
+            <form onsubmit="submitApplication(event)" id="enlistForm">
+                <div class="form-group"><label class="form-label">Discord Username</label><input class="form-input" id="f-username" placeholder="Your username" required></div>
+                <div class="form-group"><label class="form-label">Will you be active?</label><select class="form-select" id="f-active" required><option value="">Select</option><option>Yes</option><option>No</option></select></div>
+                <div class="form-group"><label class="form-label">Will you be loyal?</label><select class="form-select" id="f-loyal" required><option value="">Select</option><option>Yes</option><option>No</option></select></div>
+                <div class="form-group"><label class="form-label">Brief introduction</label><textarea class="form-textarea" id="f-intro" required></textarea></div>
+                <div class="form-group"><label class="form-label">What makes you stand out?</label><textarea class="form-textarea" id="f-better" required></textarea></div>
+                <div class="form-group"><label class="form-label">Why NMC?</label><textarea class="form-textarea" id="f-whynmc" required></textarea></div>
+                <div class="form-group"><label class="form-label">Accept Commander authority?</label><select class="form-select" id="f-authority" required><option value="">Select</option><option value="Yes">Yes, I accept</option><option>No</option></select></div>
+                <button type="submit" id="enlistSubmitBtn" class="btn-primary" style="width:100%;justify-content:center;margin-top:10px;">Submit &amp; Join Discord</button>
+            </form>
+        </div>
+    </div>
+
+    <script async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
