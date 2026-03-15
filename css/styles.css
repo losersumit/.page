@@ -1432,16 +1432,12 @@ footer {
 
 /* ─── Leaderboard ────────────────────────────────────── */
 .lb-strip {
-    display: flex;
-    flex-direction: row;
-    gap: 16px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
     max-width: 1300px;
     margin: 0 auto;
-    overflow-x: auto;
     padding-bottom: 8px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(232, 160, 32, .4) transparent;
 }
 
 .lb-card {

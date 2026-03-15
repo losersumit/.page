@@ -434,31 +434,74 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    /* ─── 8. MEMBERS (Officers) ─────────────────────────────── */
+    /* ─── 8. MEMBERS (Officers + Active + Reserved Personnel) ──── */
+
+    function renderPersonnelTable(bodyId, rows) {
+        const tbody = document.getElementById(bodyId);
+        if (!tbody) return;
+        if (!rows || rows.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3" class="personnel-empty">No personnel listed yet.</td></tr>';
+            return;
+        }
+        tbody.innerHTML = '';
+        rows.forEach((m, i) => {
+            const unitText = m.unit_number ? m.unit_number : (i + 1);
+            const tr = document.createElement('tr');
+            tr.innerHTML =
+                '<td class="personnel-rank">' + unitText + '</td>' +
+                '<td><img class="personnel-avatar" src="' +
+                    (m.photo_url || 'https://cdn.discordapp.com/embed/avatars/0.png') +
+                    '" alt="' + m.display_name + '" onerror="this.src=\'https://cdn.discordapp.com/embed/avatars/0.png\'"></td>' +
+                '<td class="personnel-name">' + m.display_name + '</td>';
+            tbody.appendChild(tr);
+        });
+    }
 
     async function loadMembers() {
         if (!supabase) return;
         try {
-            const { data, error } = await supabase
+            // Load Officers
+            const { data: officerData, error: officerError } = await supabase
                 .from('website_members')
                 .select('*')
+                .eq('section', 'officer')
                 .order('created_at', { ascending: true });
 
-            if (error) { console.error('Members fetch error:', error.message); return; }
-            if (!data || data.length === 0) return;
+            if (!officerError && officerData) {
+                const officersGrid  = document.getElementById('officers-grid');
+                const officersEmpty = document.getElementById('officers-empty');
+                if (officerData.length > 0 && officersGrid) {
+                    officersEmpty && officersEmpty.remove();
+                    officerData.forEach(m => {
+                        const card = buildMemberCard(m);
+                        officersGrid.appendChild(card);
+                        observer.observe(card);
+                    });
+                }
+            }
 
-            const officersGrid  = document.getElementById('officers-grid');
-            const officersEmpty = document.getElementById('officers-empty');
-
-            const officers = data.filter(m => m.section === 'officer');
-
-            if (officers.length > 0 && officersGrid) {
-                officersEmpty && officersEmpty.remove();
-                officers.forEach(m => {
-                    const card = buildMemberCard(m);
-                    officersGrid.appendChild(card);
-                    observer.observe(card);
-                });
+            // Load Enlisted Drivers (Active/Reserved)
+            const { data: driverData, error: driverError } = await supabase
+                .from('enlisted_drivers')
+                .select('*')
+                .order('created_at', { ascending: true });
+                
+            if (!driverError && driverData) {
+                const active = driverData.filter(m => m.status === 'AP');
+                const reserved = driverData.filter(m => m.status === 'RP');
+                
+                renderPersonnelTable('active-personnel-body', active);
+                renderPersonnelTable('reserved-personnel-body', reserved);
+                
+                // Update headers with counts
+                const activeTitle = document.getElementById('active-title');
+                if (activeTitle) activeTitle.textContent = `⚡ Active Personnel (${active.length})`;
+                
+                const reservedTitle = document.getElementById('reserved-title');
+                if (reservedTitle) reservedTitle.textContent = `🛡️ Reserved Personnel (${reserved.length})`;
+                
+                // Update stats overview
+                animateRealValue('stat-enlisted', driverData.length);
             }
         } catch (e) {
             console.error('Error loading members:', e);

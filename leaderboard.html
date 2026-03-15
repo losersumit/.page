@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leaderboard &amp; Stats | National Mobility Command</title>
-    <meta name="description" content="Live NMC driver rankings — top performers by deliveries, distance, drive time, level, and speed.">
+    <title>Our Officers | National Mobility Command</title>
+    <meta name="description" content="NMC Officers, Active Personnel and Reserved Personnel — the team driving National Mobility Command forward.">
     <meta name="theme-color" content="#e8a020">
     <link rel="icon" type="image/png" href="Assets/NMC_logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,6 +32,76 @@
         margin-bottom: 10px;
     }
     .lb-hero p { color: #6b7280; font-size: 15px; }
+
+    /* ── Personnel Tables ─────────────────────────── */
+    .personnel-section {
+        max-width: 1200px; margin: 0 auto 100px;
+        padding: 0 40px;
+    }
+    .personnel-title-row {
+        display: flex; align-items: center; gap: 14px;
+        margin-bottom: 24px;
+    }
+    .personnel-title-row h2 {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 2rem; letter-spacing: 2px;
+        background: linear-gradient(90deg, #fff 40%, #e8a020 100%);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        margin: 0;
+    }
+    .personnel-badge {
+        font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+        background: rgba(232,160,32,.12); color: #e8a020;
+        border: 1px solid rgba(232,160,32,.25); border-radius: 6px; padding: 4px 10px;
+    }
+    .personnel-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: rgba(255,255,255,.04);
+        border: 1px solid rgba(255,255,255,.08);
+        border-radius: 14px;
+        overflow: hidden;
+    }
+    .personnel-table thead tr {
+        background: rgba(232,160,32,.07);
+        border-bottom: 1px solid rgba(232,160,32,.15);
+    }
+    .personnel-table th {
+        padding: 14px 20px;
+        text-align: left; font-size: 11px; font-weight: 700;
+        letter-spacing: .12em; text-transform: uppercase;
+        color: #e8a020;
+    }
+    .personnel-table td {
+        padding: 14px 20px;
+        font-size: 14px; color: #c9d4e8;
+        border-bottom: 1px solid rgba(255,255,255,.04);
+        vertical-align: middle;
+    }
+    .personnel-table tbody tr:last-child td { border-bottom: none; }
+    .personnel-table tbody tr {
+        transition: background .2s;
+    }
+    .personnel-table tbody tr:hover { background: rgba(232,160,32,.04); }
+    .personnel-rank {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.1rem; color: #e8a020; letter-spacing: 1px;
+    }
+    .personnel-avatar {
+        width: 36px; height: 36px; border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid rgba(232,160,32,.3);
+        vertical-align: middle;
+    }
+    .personnel-name { font-weight: 600; color: #fff; }
+    .personnel-empty {
+        text-align: center; color: #4b5563;
+        padding: 36px 0; font-size: 14px;
+    }
+    @media (max-width: 720px) {
+        .personnel-section { padding: 0 16px; }
+        .personnel-table th, .personnel-table td { padding: 12px 12px; font-size: 13px; }
+    }
 
     /* ── Stats overview ──────────────────── */
     .stats-overview {
@@ -82,16 +152,16 @@
             <a href="index.html">← Home</a>
             <a href="gallery.html">Gallery</a>
             <a href="360.html">360° View</a>
-            <a href="leaderboard.html" style="color:var(--gold);">Leaderboard</a>
+            <a href="leaderboard.html" style="color:var(--gold);">Our Officers</a>
         </div>
         <button onclick="openEnlistModal()" class="nav-btn" style="border:none;cursor:pointer;">Enlist Now</button>
     </nav>
 
     <!-- ═══ HERO ══════════════════════════════════════════ -->
     <div class="lb-hero">
-        <div class="tag">NMC Rankings</div>
-        <h1>Leaderboard &amp; Stats</h1>
-        <p>Live top-5 rankings across all NMC drivers — updated in real time.</p>
+        <div class="tag">NMC Command</div>
+        <h1>Our Officers</h1>
+        <p>The team driving National Mobility Command forward — officers, active and reserved personnel.</p>
     </div>
 
     <!-- ═══ STATS OVERVIEW ═══════════════════════════════ -->
@@ -157,6 +227,46 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- ═══ ACTIVE PERSONNEL ════════════════════════════ -->
+    <div class="personnel-section">
+        <div class="personnel-title-row">
+            <h2 id="active-title">⚡ Active Personnel (0)</h2>
+            <span class="personnel-badge">Live</span>
+        </div>
+        <table class="personnel-table" id="active-personnel-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th></th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody id="active-personnel-body">
+                <tr><td colspan="3" class="personnel-empty">Loading…</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ═══ RESERVED PERSONNEL ══════════════════════════ -->
+    <div class="personnel-section">
+        <div class="personnel-title-row">
+            <h2 id="reserved-title">🛡️ Reserved Personnel (0)</h2>
+            <span class="personnel-badge">Reserve</span>
+        </div>
+        <table class="personnel-table" id="reserved-personnel-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th></th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody id="reserved-personnel-body">
+                <tr><td colspan="3" class="personnel-empty">Loading…</td></tr>
+            </tbody>
+        </table>
     </div>
 
     <!-- ═══ MODAL ═════════════════════════════════════════ -->
