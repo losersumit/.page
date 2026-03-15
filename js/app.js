@@ -175,9 +175,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function applyGuildStats(guildData) {
         if (!guildData) return;
-        animateRealValue('stat-enlisted',      guildData.enlisted_drivers || 0, '');
-        animateRealValue('hero-stat-enlisted', guildData.enlisted_drivers || 0, '');
-        animateRealValue('stat-net-worth',     guildData.net_worth        || 0, '', true);
+        if (guildData.net_worth !== undefined) {
+            animateRealValue('stat-net-worth', guildData.net_worth || 0, '', true);
+        }
     }
 
     async function fetchRealtimeStats() {
@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Guild-level stats
             const { data: guildData, error: guildErr } = await supabase
                 .from('approved_guilds')
-                .select('enlisted_drivers, net_worth')
+                .select('net_worth')
                 .eq('guild_id', TARGET_GUILD_ID)
                 .single();
 
@@ -502,6 +502,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 
                 // Update stats overview
                 animateRealValue('stat-enlisted', driverData.length);
+                animateRealValue('hero-stat-enlisted', driverData.length);
             }
         } catch (e) {
             console.error('Error loading members:', e);
