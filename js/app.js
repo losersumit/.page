@@ -93,9 +93,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     window.submitApplication = submitApplication;
 
-    // Close modal on Escape key
+    // Close modal / driver card on Escape key
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeEnlistModal();
+        if (e.key === 'Escape') { closeEnlistModal(); hideDriverCard(); }
     });
 
     // Close modal when clicking outside the content box
@@ -436,7 +436,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /* ─── 8. MEMBERS (Officers + Active + Reserved Personnel) ──── */
 
-    function renderPersonnelTable(bodyId, rows) {
+    function renderPersonnelTable(bodyId, rows, clickable) {
         const tbody = document.getElementById(bodyId);
         if (!tbody) return;
         if (!rows || rows.length === 0) {
@@ -444,9 +444,14 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
         tbody.innerHTML = '';
-        rows.forEach((m, i) => {
+        rows.forEach(function (m, i) {
             const unitText = m.unit_number ? m.unit_number : (i + 1);
             const tr = document.createElement('tr');
+            if (clickable && m.discord_id) {
+                tr.className = 'clickable-row';
+                tr.title = 'Click to view driver stats';
+                tr.addEventListener('click', function () { showDriverCard(m); });
+            }
             tr.innerHTML =
                 '<td class="personnel-rank">' + unitText + '</td>' +
                 '<td><img class="personnel-avatar" src="' +
@@ -487,22 +492,31 @@ document.addEventListener('DOMContentLoaded', function () {
                 .order('created_at', { ascending: true });
                 
             if (!driverError && driverData) {
-                const active = driverData.filter(m => m.status === 'AP');
+                const active   = driverData.filter(m => m.status === 'AP');
                 const reserved = driverData.filter(m => m.status === 'RP');
-                
-                renderPersonnelTable('active-personnel-body', active);
-                renderPersonnelTable('reserved-personnel-body', reserved);
-                
-                // Update headers with counts
+                const retired  = driverData
+                    .filter(m => m.status === 'RTD')
+                    .sort((a, b) => {
+                        const na = a.display_name || '', nb = b.display_name || '';
+                        return na.length !== nb.length ? na.length - nb.length : na.localeCompare(nb);
+                    });
+
+                renderPersonnelTable('active-personnel-body',   active,   true);
+                renderPersonnelTable('reserved-personnel-body', reserved, true);
+                renderPersonnelTable('retired-personnel-body',  retired,  true);
+
                 const activeTitle = document.getElementById('active-title');
                 if (activeTitle) activeTitle.textContent = `⚡ Active Personnel (${active.length})`;
-                
+
                 const reservedTitle = document.getElementById('reserved-title');
                 if (reservedTitle) reservedTitle.textContent = `🛡️ Reserved Personnel (${reserved.length})`;
-                
-                // Update stats overview
-                animateRealValue('stat-enlisted', driverData.length);
-                animateRealValue('hero-stat-enlisted', driverData.length);
+
+                const retiredTitle = document.getElementById('retired-title');
+                if (retiredTitle) retiredTitle.textContent = `🎖️ Retired Personnel (${retired.length})`;
+
+                // Stats overview counts active + reserved only
+                animateRealValue('stat-enlisted', active.length + reserved.length);
+                animateRealValue('hero-stat-enlisted', active.length + reserved.length);
             }
         } catch (e) {
             console.error('Error loading members:', e);
@@ -519,6 +533,74 @@ document.addEventListener('DOMContentLoaded', function () {
             '<div class="member-role">' + m.role_title   + '</div>';
         return card;
     }
+
+
+    /* ─── DRIVER STATS CARD ─────────────────────────────── */
+
+    async function showDriverCard(driverData) {
+        var overlay = document.getElementById('driver-card-overlay');
+        document.getElementById('dc-name').textContent   = driverData.display_name || 'Unknown';
+        document.getElementById('dc-unit').textContent   = driverData.unit_number ? 'Unit #' + driverData.unit_number : '';
+        var av = document.getElementById('dc-avatar');
+        av.src = driverData.photo_url || 'https://cdn.discordapp.com/embed/avatars/0.png';
+        av.onerror = function () { av.src = 'https://cdn.discordapp.com/embed/avatars/0.png'; };
+
+        var statusMap = { AP: ['Active','ap'], RP: ['Reserved','rp'], RTD: ['Retired','rtd'] };
+        var sc = statusMap[driverData.status] || ['Unknown','rp'];
+        var badge = document.getElementById('dc-status');
+        badge.textContent  = sc[0];
+        badge.className    = 'driver-card-badge ' + sc[1];
+
+        var dcStats = document.getElementById('dc-stats');
+        dcStats.innerHTML  = '<div class="dc-loading">⏳ Fetching stats…</div>';
+        overlay.classList.add('active');
+
+        try {
+            if (!driverData.discord_id) throw new Error('no discord_id');
+            var pRes = await supabase.from('players').select('id').eq('discord_id', driverData.discord_id).maybeSingle();
+            if (!pRes.data) { dcStats.innerHTML = '<div class="dc-no-stats">📫 No player record found.</div>'; return; }
+
+            var sRes = await supabase.from('player_stats').select('*').eq('player_id', pRes.data.id).maybeSingle();
+            if (!sRes.data) { dcStats.innerHTML = '<div class="dc-no-stats">📫 No stats recorded yet.</div>'; return; }
+
+            var s = sRes.data;
+            var fDist = function (v) { v = v || 0; return v >= 1000 ? (v/1000).toFixed(1)+'K km' : Math.round(v).toLocaleString()+' km'; };
+            var fTime = function (v) { var h = Math.floor((v||0)/60); return h >= 1000 ? (h/1000).toFixed(1)+'K h' : h.toLocaleString()+' h'; };
+            var fNum  = function (v) { v = v || 0; return v >= 1000 ? (v/1000).toFixed(1)+'K' : v.toLocaleString(); };
+            var fMon  = function (v) { v = v || 0; return '$'+(v>=1e6?(v/1e6).toFixed(1)+'M':v>=1000?(v/1000).toFixed(1)+'K':v.toLocaleString()); };
+
+            var items = [
+                { icon:'📊', label:'Level',          val: (s.level||0) },
+                { icon:'📍', label:'Total Distance', val: fDist(s.total_distance_km) },
+                { icon:'⏱️', label:'Driving Time',   val: fTime(s.total_time_minutes) },
+                { icon:'⚡',  label:'Best Avg Speed', val: (s.best_avg_speed_kmph||0).toFixed(1)+' km/h' },
+                { icon:'✨',  label:'XP',             val: fNum(s.xp) },
+                { icon:'⭐',  label:'Total Stars',    val: fNum(s.total_stars) },
+                { icon:'✅',  label:'Clean Runs',     val: fNum(s.clean_deliveries) },
+                { icon:'💰', label:'Net Worth',      val: fMon(s.net_worth) },
+                { icon:'🚚', label:'Total Runs',     val: fNum(s.runs) },
+                { icon:'⚠️', label:'Penalties',      val: 'Dm: '+(s.total_damage_penalty||0)+' | Tm: '+(s.total_time_penalty||0) },
+            ];
+            dcStats.innerHTML = items.map(function (it) {
+                return '<div class="dc-stat"><div class="dc-stat-icon">' + it.icon + '</div>' +
+                    '<div class="dc-stat-label">' + it.label + '</div>' +
+                    '<div class="dc-stat-value">' + it.val + '</div></div>';
+            }).join('');
+        } catch (err) {
+            console.error('[DriverCard]', err);
+            dcStats.innerHTML = '<div class="dc-no-stats">❌ Failed to load stats.</div>';
+        }
+    }
+
+    function hideDriverCard() {
+        document.getElementById('driver-card-overlay').classList.remove('active');
+    }
+    window.hideDriverCard = hideDriverCard;
+
+    function handleOverlayClick(e) {
+        if (e.target === document.getElementById('driver-card-overlay')) hideDriverCard();
+    }
+    window.handleOverlayClick = handleOverlayClick;
 
 
     /* ─── 9. UTILS ──────────────────────────────────────────── */
