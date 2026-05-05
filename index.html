@@ -23,6 +23,53 @@
 
     <style>
     /* ══════════════════════════════════════════════════
+       HERO BACKGROUND IMAGE
+    ══════════════════════════════════════════════════ */
+    /* Fixed truck image — sits below the nav, above the dot-grid,
+       behind hero-content and the convoy canvas */
+    .hero-bg-image {
+        position: fixed;
+        top: 72px;        /* flush below the fixed nav */
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 0;       /* above dot-grid (-1), below hero content (3) */
+        pointer-events: none;
+        overflow: hidden;
+    }
+    .hero-bg-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center bottom;
+        display: block;
+        mask-image: linear-gradient(
+            to bottom,
+            rgba(0,0,0,0.15) 0%,
+            rgba(0,0,0,0.55) 60%,
+            rgba(0,0,0,0.95) 88%,
+            rgba(0,0,0,1)    100%
+        );
+        -webkit-mask-image: linear-gradient(
+            to bottom,
+            rgba(0,0,0,0.15) 0%,
+            rgba(0,0,0,0.55) 60%,
+            rgba(0,0,0,0.95) 88%,
+            rgba(0,0,0,1)    100%
+        );
+    }
+    /* Hero stacking isolation so #hero sits above the fixed bg image */
+    #hero { isolation: isolate; }
+    /* Lighten the dark overlay so bg_truck.png shows through */
+    #hero .hero-bg {
+        background: linear-gradient(to bottom,
+            rgba(10,22,40,0.55) 0%,
+            rgba(10,22,40,0.15) 40%,
+            rgba(10,22,40,0.35) 70%,
+            rgba(10,22,40,0.88) 100%) !important;
+    }
+
+    /* ══════════════════════════════════════════════════
        SIDEBAR NAV
     ══════════════════════════════════════════════════ */
     /* hamburger toggle button — positioned inside the nav bar */
@@ -207,9 +254,15 @@
 </head>
 <body>
 
-    <!-- fixed full-page dot-grid background (behind everything) -->
+    <!-- fixed full-page dot-grid background (behind everything, shown only below hero) -->
     <div id="dot-grid-wrap" class="dot-grid-wrap" style="position:fixed;inset:0;z-index:-1;pointer-events:none;">
         <canvas id="dot-grid-canvas" class="dot-grid-canvas"></canvas>
+    </div>
+
+    <!-- Fixed hero background image (bg_truck.png) -->
+    <!-- Sits between the nav (72px) and the page; convoy canvas renders above it -->
+    <div class="hero-bg-image" id="hero-bg-image">
+        <img src="Assets/bg_truck.png" alt="NMC Truck Background">
     </div>
 
     <!-- ═══════════════════════ SIDEBAR ════════════════ -->
@@ -300,8 +353,8 @@
         <div class="hero-bg"></div>
         <div class="stars"></div>
         <div class="road-glow"></div>
-        <!-- convoy replaces light-beams -->
-        <canvas id="convoy-canvas" style="position:absolute;bottom:0;left:0;width:100%;height:130px;z-index:2;pointer-events:none;"></canvas>
+        <!-- convoy canvas — z-index:3 ensures it paints above the fixed bg image -->
+        <canvas id="convoy-canvas" style="position:absolute;bottom:0;left:0;width:100%;height:130px;z-index:3;pointer-events:none;"></canvas>
 
         <div class="hero-content">
             <div class="hero-badge"><div class="dot"></div>Now Recruiting · Drivers Wanted</div>
@@ -448,6 +501,45 @@
     <script src="js/app.js"></script>
     <script src="js/viewer360.js"></script>
     <script src="js/dotgrid.js"></script>
+
+    <script>
+    /* ── Hero bg image: clip to hero section + hide dots in hero ─── */
+    (function(){
+        const heroBgImg = document.getElementById('hero-bg-image');
+        const dotWrap   = document.getElementById('dot-grid-wrap');
+        const hero      = document.getElementById('hero');
+        const NAV_H     = 72;
+
+        function update(){
+            const heroRect = hero.getBoundingClientRect();
+            const heroBottom = heroRect.bottom; // bottom of hero relative to viewport
+
+            /* Clip the fixed bg image so it only shows within the hero area.
+               When the hero scrolls out of view (heroBottom <= NAV_H), hide it. */
+            if(heroBottom <= NAV_H){
+                heroBgImg.style.opacity = '0';
+                heroBgImg.style.pointerEvents = 'none';
+            } else {
+                heroBgImg.style.opacity = '1';
+                /* Clip bottom of the fixed image to match hero's bottom edge */
+                const clipBottom = Math.max(0, window.innerHeight - heroBottom);
+                heroBgImg.style.clipPath = `inset(0 0 ${clipBottom}px 0)`;
+            }
+
+            /* Mask dots in the hero area: push dot-grid down so it starts below hero */
+            const dotTop = Math.max(0, heroBottom);
+            dotWrap.style.top    = dotTop + 'px';
+            dotWrap.style.height = (window.innerHeight - dotTop) + 'px';
+        }
+
+        /* Smooth transition on opacity */
+        heroBgImg.style.transition = 'opacity 0.3s ease';
+
+        window.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update, { passive: true });
+        update(); /* run once on load */
+    })();
+    </script>
 
     <script>
     /* ── Sidebar ─────────────────────────────────────── */
