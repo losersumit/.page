@@ -254,10 +254,7 @@
 </head>
 <body>
 
-    <!-- fixed full-page dot-grid background (behind everything, shown only below hero) -->
-    <div id="dot-grid-wrap" class="dot-grid-wrap" style="position:fixed;inset:0;z-index:-1;pointer-events:none;">
-        <canvas id="dot-grid-canvas" class="dot-grid-canvas"></canvas>
-    </div>
+
 
     <!-- Fixed hero background image (bg_truck.png) -->
     <!-- Sits between the nav (72px) and the page; convoy canvas renders above it -->
@@ -335,9 +332,9 @@
         </div>
         <div class="nav-links">
             <a href="#about">About</a>
-            <a href="#divisions">Divisions</a>
-            <a href="#fleet">Fleet</a>
-            <a href="#partners">Partners</a>
+            <a href="divisions.html">Divisions</a>
+            <a href="fleet.html">Fleet</a>
+            <a href="partners.html">Partners</a>
             <a href="#officers">Team</a>
         </div>
         <div style="display:flex;align-items:center;gap:10px;">
@@ -373,6 +370,9 @@
         </div>
     </section>
 
+    <!-- Wrap all subsequent content in a solid background to cover the fixed hero naturally -->
+    <div class="page-content" style="background: var(--navy); position: relative; z-index: 10;">
+
     <!-- ═══════════════════════ ABOUT ══════════════════════════════ -->
     <section id="about">
         <div class="about-grid">
@@ -395,50 +395,7 @@
         </div>
     </section>
 
-    <!-- ═══════════════════════ DIVISIONS ══════════════════════════ -->
-    <section id="divisions">
-        <div class="section-tag reveal">Our Structure</div>
-        <h2 class="section-title reveal">Specialized Divisions</h2>
-        <p class="section-sub reveal">NMC operates through highly specialized divisions to ensure operational superiority across all logistics domains.</p>
-        <div class="divisions-grid">
-            <div class="division-card reveal reveal-delay-1">
-                <div class="division-title">RapidLine</div>
-                <div class="division-desc">Focuses on time-critical, high-speed logistics and express transportation. RapidLine ensures that crucial cargo reaches its destination exactly when needed, with zero margin for error.</div>
-            </div>
-            <div class="division-card reveal reveal-delay-2">
-                <div class="division-title">High-Value Operations (HVO)</div>
-                <div class="division-desc">The elite branch dealing with securely transporting top-secret, heavily guarded, and multi-million dollar assets. HVO drivers are hand-picked for their flawless records and reliability.</div>
-            </div>
-        </div>
-    </section>
 
-    <!-- ═══════════════════════ FLEET ═══════════════════════════════ -->
-    <section id="fleet">
-        <div class="section-tag reveal">Our Vehicles</div>
-        <h2 class="section-title reveal">The Fleet</h2>
-        <p class="section-sub reveal">Every rig in the National Mobility Command fleet is maintained to peak condition and assigned to the right job.</p>
-        <div class="fleet-grid">
-            <div class="fleet-card reveal reveal-delay-1"><div class="fleet-truck-icon">🚛</div><div class="fleet-name">Class 8 Semi</div><div class="fleet-tag">Standard</div></div>
-            <div class="fleet-card reveal reveal-delay-2"><div class="fleet-truck-icon">🚚</div><div class="fleet-name">Tanker Rig</div><div class="fleet-tag">Liquid Haul</div></div>
-            <div class="fleet-card reveal reveal-delay-3"><div class="fleet-truck-icon">🚜</div><div class="fleet-name">Lowboy Trailer</div><div class="fleet-tag">Oversized</div></div>
-            <div class="fleet-card reveal"><div class="fleet-truck-icon">🧊</div><div class="fleet-name">Reefer Unit</div><div class="fleet-tag">Refrigerated</div></div>
-        </div>
-    </section>
-
-    <!-- ═══════════════════════ PARTNERS (FULL) ════════════════════ -->
-    <section id="partners">
-        <div class="section-tag reveal">Trusted Partners</div>
-        <h2 class="section-title reveal">Our Partners</h2>
-        <p class="section-sub reveal">We collaborate with the finest virtual trucking communities and logistics organizations across the network.</p>
-
-        <div id="partners-loading" class="partners-loading">
-            <div class="mini-spinner"></div>
-            <span>Loading partners…</span>
-        </div>
-        <div class="partners-grid" id="partners-grid" style="display:none;"></div>
-        <div class="partners-empty" id="partners-empty" style="display:none;">No partners listed yet. Use <code>/addpartner</code> to add.</div>
-
-    </section>
 
     <!-- ═══════════════════════ OFFICERS ════════════════════════════ -->
     <section id="officers" style="background:transparent;">
@@ -458,11 +415,11 @@
         </div>
         <div class="footer-links" style="flex-wrap:wrap;">
             <a href="#about">About</a>
-            <a href="#divisions">Divisions</a>
+            <a href="divisions.html">Divisions</a>
             <a href="gallery.html">Gallery</a>
-            <a href="#fleet">Fleet</a>
+            <a href="fleet.html">Fleet</a>
             <a href="360.html">360° View</a>
-            <a href="#partners">Partners</a>
+            <a href="partners.html">Partners</a>
             <a href="leaderboard.html">Our Officers</a>
         </div>
         <div class="footer-contact" style="font-size:13px;color:var(--muted);display:flex;gap:20px;flex-wrap:wrap;align-items:center;">
@@ -470,10 +427,11 @@
             <a href="https://www.facebook.com/people/National-Mobility-Command/61561385883344/" target="_blank" class="footer-social-link" title="Facebook"><img src="Assets/2023_Facebook_icon.svg" alt="Facebook" style="width:22px;height:22px;object-fit:contain;filter:brightness(.8);transition:filter .2s;" onmouseover="this.style.filter='brightness(1.2)'" onmouseout="this.style.filter='brightness(.8)'"><span>Facebook</span></a>
             <a href="https://www.youtube.com/@nmc.logistics" target="_blank" class="footer-social-link" title="YouTube"><img src="Assets/YouTube_2024.svg" alt="YouTube" style="width:22px;height:22px;object-fit:contain;filter:brightness(.8);transition:filter .2s;" onmouseover="this.style.filter='brightness(1.2)'" onmouseout="this.style.filter='brightness(.8)'"><span>YouTube</span></a>
             <a href="https://discord.gg/qwRUQ6msT8" target="_blank" class="footer-social-link" title="Discord"><img src="Assets/Discord_logo.svg" alt="Discord" style="width:22px;height:22px;object-fit:contain;filter:brightness(.8);transition:filter .2s;" onmouseover="this.style.filter='brightness(1.2)'" onmouseout="this.style.filter='brightness(.8)'"><span>Discord</span></a>
-            <a href="mailto:nmc.logistics.eu@gmail.com" class="footer-social-link" title="Email"><img src="Assets/Gmail_icon_(2020).svg" alt="Gmail" style="width:22px;height:22px;object-fit:contain;filter:brightness(.8);transition:filter .2s;" onmouseover="this.style.filter='brightness(1.2)'" onmouseout="this.style.filter='brightness(.8)'"><span>nmc.logistics.eu@gmail.com</span></a>
+            <a href="mailto:contact@nmc-logistics.xyz" class="footer-social-link" title="Email"><img src="Assets/Gmail_icon_(2020).svg" alt="Gmail" style="width:22px;height:22px;object-fit:contain;filter:brightness(.8);transition:filter .2s;" onmouseover="this.style.filter='brightness(1.2)'" onmouseout="this.style.filter='brightness(.8)'"><span>contact@nmc-logistics.xyz</span></a>
         </div>
         <div class="footer-copy">© 2026 National Mobility Command. All rights reserved.</div>
     </footer>
+    </div> <!-- /page-content wrapper -->
 
     <!-- ═══════════════════════ MODAL ════════════════════════════════ -->
     <div id="enlistModal" class="modal-overlay">
@@ -500,46 +458,9 @@
     <script src="js/supabase.min.js"></script>
     <script src="js/app.js"></script>
     <script src="js/viewer360.js"></script>
-    <script src="js/dotgrid.js"></script>
 
-    <script>
-    /* ── Hero bg image: clip to hero section + hide dots in hero ─── */
-    (function(){
-        const heroBgImg = document.getElementById('hero-bg-image');
-        const dotWrap   = document.getElementById('dot-grid-wrap');
-        const hero      = document.getElementById('hero');
-        const NAV_H     = 72;
 
-        function update(){
-            const heroRect = hero.getBoundingClientRect();
-            const heroBottom = heroRect.bottom; // bottom of hero relative to viewport
 
-            /* Clip the fixed bg image so it only shows within the hero area.
-               When the hero scrolls out of view (heroBottom <= NAV_H), hide it. */
-            if(heroBottom <= NAV_H){
-                heroBgImg.style.opacity = '0';
-                heroBgImg.style.pointerEvents = 'none';
-            } else {
-                heroBgImg.style.opacity = '1';
-                /* Clip bottom of the fixed image to match hero's bottom edge */
-                const clipBottom = Math.max(0, window.innerHeight - heroBottom);
-                heroBgImg.style.clipPath = `inset(0 0 ${clipBottom}px 0)`;
-            }
-
-            /* Mask dots in the hero area: push dot-grid down so it starts below hero */
-            const dotTop = Math.max(0, heroBottom);
-            dotWrap.style.top    = dotTop + 'px';
-            dotWrap.style.height = (window.innerHeight - dotTop) + 'px';
-        }
-
-        /* Smooth transition on opacity */
-        heroBgImg.style.transition = 'opacity 0.3s ease';
-
-        window.addEventListener('scroll', update, { passive: true });
-        window.addEventListener('resize', update, { passive: true });
-        update(); /* run once on load */
-    })();
-    </script>
 
     <script>
     /* ── Sidebar ─────────────────────────────────────── */
@@ -567,52 +488,7 @@
     document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeSidebar(); });
     window.closeSidebar = closeSidebar;
 
-    /* ── Partners ─────────────────────────────────────── */
-    const SUPABASE_URL = 'https://aijrvldtilncnclvvles.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpanJ2bGR0aWxuY25jbHZ2bGVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1MDQ2MjgsImV4cCI6MjA4MTA4MDYyOH0.ASKDuChVVlCzW7cnfUJQ2TbPUx90HPKZ60c6o7-s_AM';
 
-    function waitForSb(cb, attempt=0){
-        if(typeof window.supabase !== 'undefined') cb();
-        else if(attempt < 30) setTimeout(()=>waitForSb(cb, attempt+1), 200);
-    }
-
-    waitForSb(async ()=>{
-        const grid   = document.getElementById('partners-grid');
-        const empty  = document.getElementById('partners-empty');
-        const loader = document.getElementById('partners-loading');
-        try {
-            const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-            const { data, error } = await sb.from('partners').select('*').order('created_at', {ascending:false});
-            loader.style.display='none';
-            if(error || !data || !data.length){ empty.style.display='block'; return; }
-            grid.style.display='grid';
-            data.forEach(p=>{
-                const card = document.createElement('div');
-                card.className = 'partner-card reveal';
-                card.innerHTML = `
-                    <div class="partner-logo-wrap">
-                        ${p.logo_url
-                            ? `<img src="${p.logo_url}" alt="${p.name||''}">`
-                            : `<div class="partner-logo-placeholder">🤝</div>`}
-                    </div>
-                    <div class="partner-info">
-                        <div class="partner-name">${p.name||'Partner'}</div>
-                        <div class="partner-type">${p.type||'VTC'}</div>
-                        ${p.member_count ? `<div class="partner-members">👥 ${p.member_count} members</div>` : ''}
-                    </div>
-                    ${p.discord_invite ? `<a href="${p.discord_invite}" target="_blank" class="partner-discord">Join Discord →</a>` : ''}
-                `;
-                grid.appendChild(card);
-            });
-            // trigger reveal on newly added cards
-            if(window._revealObserver) grid.querySelectorAll('.reveal').forEach(el=>window._revealObserver.observe(el));
-        } catch(e){
-            console.warn('[Partners]', e);
-            loader.style.display='none';
-            empty.style.display='block';
-        }
-    });
-    </script>
     <script src="js/convoy.js"></script>
 </body>
 </html>

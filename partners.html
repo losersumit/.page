@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partners | National Mobility Command</title>
+    <meta name="theme-color" content="#e8a020">
+    <link rel="icon" type="image/png" href="Assets/NMC_logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .subpage-hero {
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 60px 60px;
+            position: relative;
+            background: linear-gradient(to bottom, rgba(10,22,40,.95) 0%, rgba(10,22,40,.75) 100%);
+            border-bottom: 1px solid var(--border);
+        }
+        .subpage-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 0%, rgba(232,160,32,.13) 0%, transparent 65%);
+            pointer-events: none;
+        }
+        .subpage-hero .section-tag  { margin-bottom: 12px; }
+        .subpage-hero .section-title { margin-bottom: 10px; }
+        .subpage-hero .section-sub  { margin: 0 auto; }
+
+        .subpage-main {
+            padding: 60px 60px 100px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        @media (max-width: 768px) {
+            .subpage-hero { padding: 110px 24px 50px; }
+            .subpage-main { padding: 40px 24px 80px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═══════════════════════ NAV ═══════════════════════════ -->
+    <nav>
+        <div class="nav-logo">
+            <a href="index.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;">
+                <img src="Assets/NMC_logo.png" alt="NMC Logo"
+                    style="width: 42px; height: 42px; object-fit: contain; filter: drop-shadow(0 0 10px rgba(232, 160, 32, 0.4));">
+                <span>National Mobility Command</span>
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">← Home</a>
+            <a href="divisions.html">Divisions</a>
+            <a href="fleet.html">Fleet</a>
+            <a href="partners.html" style="color:var(--gold);">Partners</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="leaderboard.html">Our Officers</a>
+        </div>
+        <button onclick="openEnlistModal()" class="nav-btn" style="border:none; cursor:pointer;">Enlist Now</button>
+    </nav>
+
+    <!-- ── Sub-page hero ── -->
+    <div class="subpage-hero">
+        <div class="section-tag">Trusted Partners</div>
+        <h2 class="section-title">Our <span style="color:var(--gold)">Partners</span></h2>
+        <p class="section-sub">We collaborate with the finest virtual trucking communities and logistics organizations across the network.</p>
+    </div>
+
+    <!-- ═══════════════════════ MAIN CONTENT ═══════════════════ -->
+    <div class="subpage-main">
+        <div id="partners-loading" class="partners-loading">
+            <div class="mini-spinner"></div>
+            <span>Loading partners…</span>
+        </div>
+        <div class="partners-grid" id="partners-grid" style="display:none; margin-top:0;"></div>
+        <div class="partners-empty" id="partners-empty" style="display:none;">No partners listed yet. Use <code>/addpartner</code> to add.</div>
+    </div>
+
+    <!-- ═══════════════════════ FOOTER ══════════════════════════════ -->
+    <footer style="margin-top:auto;">
+        <div class="footer-copy" style="text-align:center; width:100%;">© 2026 National Mobility Command. All rights reserved.</div>
+    </footer>
+
+    <!-- MODAL (hidden) -->
+    <div id="enlistModal" class="modal-overlay"></div>
+
+    <script src="js/supabase.min.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+    /* ── Partners ─────────────────────────────────────── */
+    const SUPABASE_URL = 'https://aijrvldtilncnclvvles.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpanJ2bGR0aWxuY25jbHZ2bGVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1MDQ2MjgsImV4cCI6MjA4MTA4MDYyOH0.ASKDuChVVlCzW7cnfUJQ2TbPUx90HPKZ60c6o7-s_AM';
+
+    function waitForSb(cb, attempt=0){
+        if(typeof window.supabase !== 'undefined') cb();
+        else if(attempt < 30) setTimeout(()=>waitForSb(cb, attempt+1), 200);
+    }
+
+    waitForSb(async ()=>{
+        const grid   = document.getElementById('partners-grid');
+        const empty  = document.getElementById('partners-empty');
+        const loader = document.getElementById('partners-loading');
+        try {
+            const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            const { data, error } = await sb.from('partners').select('*').order('created_at', {ascending:false});
+            loader.style.display='none';
+            if(error || !data || !data.length){ empty.style.display='block'; return; }
+            grid.style.display='grid';
+            data.forEach(p=>{
+                const card = document.createElement('div');
+                card.className = 'partner-card reveal';
+                card.innerHTML = `
+                    <div class="partner-logo-wrap">
+                        ${p.logo_url
+                            ? `<img src="${p.logo_url}" alt="${p.name||''}">`
+                            : `<div class="partner-logo-placeholder">🤝</div>`}
+                    </div>
+                    <div class="partner-info">
+                        <div class="partner-name">${p.name||'Partner'}</div>
+                        <div class="partner-type">${p.type||'VTC'}</div>
+                        ${p.member_count ? `<div class="partner-members">👥 ${p.member_count} members</div>` : ''}
+                    </div>
+                    ${p.discord_invite ? `<a href="${p.discord_invite}" target="_blank" class="partner-discord">Join Discord →</a>` : ''}
+                `;
+                grid.appendChild(card);
+            });
+            // trigger reveal on newly added cards
+            if(window._revealObserver) grid.querySelectorAll('.reveal').forEach(el=>window._revealObserver.observe(el));
+        } catch(e){
+            console.warn('[Partners]', e);
+            loader.style.display='none';
+            empty.style.display='block';
+        }
+    });
+    </script>
+</body>
+</html>

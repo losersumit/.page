@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divisions | National Mobility Command</title>
+    <meta name="theme-color" content="#e8a020">
+    <link rel="icon" type="image/png" href="Assets/NMC_logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .subpage-hero {
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 60px 60px;
+            position: relative;
+            background: linear-gradient(to bottom, rgba(10,22,40,.95) 0%, rgba(10,22,40,.75) 100%);
+            border-bottom: 1px solid var(--border);
+        }
+        .subpage-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 0%, rgba(232,160,32,.13) 0%, transparent 65%);
+            pointer-events: none;
+        }
+        .subpage-hero .section-tag  { margin-bottom: 12px; }
+        .subpage-hero .section-title { margin-bottom: 10px; }
+        .subpage-hero .section-sub  { margin: 0 auto; }
+
+        .subpage-main {
+            padding: 60px 60px 100px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        @media (max-width: 768px) {
+            .subpage-hero { padding: 110px 24px 50px; }
+            .subpage-main { padding: 40px 24px 80px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═══════════════════════ NAV ═══════════════════════════ -->
+    <nav>
+        <div class="nav-logo">
+            <a href="index.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;">
+                <img src="Assets/NMC_logo.png" alt="NMC Logo"
+                    style="width: 42px; height: 42px; object-fit: contain; filter: drop-shadow(0 0 10px rgba(232, 160, 32, 0.4));">
+                <span>National Mobility Command</span>
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">← Home</a>
+            <a href="divisions.html" style="color:var(--gold);">Divisions</a>
+            <a href="fleet.html">Fleet</a>
+            <a href="partners.html">Partners</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="leaderboard.html">Our Officers</a>
+        </div>
+        <button onclick="openEnlistModal()" class="nav-btn" style="border:none; cursor:pointer;">Enlist Now</button>
+    </nav>
+
+    <!-- ── Sub-page hero ── -->
+    <div class="subpage-hero">
+        <div class="section-tag">Our Structure</div>
+        <h2 class="section-title">Specialized <span style="color:var(--gold)">Divisions</span></h2>
+        <p class="section-sub">NMC operates through highly specialized divisions to ensure operational superiority across all logistics domains.</p>
+    </div>
+
+    <!-- ═══════════════════════ MAIN CONTENT ═══════════════════ -->
+    <div class="subpage-main">
+        <div class="divisions-grid">
+            <div class="division-card reveal reveal-delay-1">
+                <div class="division-title">RapidLine</div>
+                <div class="division-desc">Focuses on time-critical, high-speed logistics and express transportation. RapidLine ensures that crucial cargo reaches its destination exactly when needed, with zero margin for error.</div>
+            </div>
+            <div class="division-card reveal reveal-delay-2">
+                <div class="division-title">High-Value Operations (HVO)</div>
+                <div class="division-desc">The elite branch dealing with securely transporting top-secret, heavily guarded, and multi-million dollar assets. HVO drivers are hand-picked for their flawless records and reliability.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════ FOOTER ══════════════════════════════ -->
+    <footer style="margin-top:auto;">
+        <div class="footer-copy" style="text-align:center; width:100%;">© 2026 National Mobility Command. All rights reserved.</div>
+    </footer>
+
+    <!-- MODAL (hidden) -->
+    <div id="enlistModal" class="modal-overlay">
+        <!-- Content omitted for brevity, but should be handled by app.js or similar if needed -->
+    </div>
+
+    <script src="js/supabase.min.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
