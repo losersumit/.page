@@ -78,7 +78,7 @@
     <div class="subpage-hero">
         <div class="section-tag">Interactive</div>
         <h2 class="section-title">360° Truck <span style="color:var(--gold)">Showcase</span></h2>
-        <p class="section-sub">Drag left or right to spin the truck around. Use the scrubber or arrow keys to step frame by frame.</p>
+        <p class="section-sub">Drag left or right to spin the truck around.</p>
     </div>
 
     <!-- ═══════════════════════ 360° VIEWER ═══════════════════ -->
@@ -86,7 +86,7 @@
         <div class="viewer360-card">
             <!-- top macOS-style bar -->
             <div class="viewer360-topbar">
-                <span class="v360-topbar-label">NMC Logistics &mdash; 360° VIEWER &mdash; 28 FRAMES</span>
+                <span class="v360-topbar-label">NMC Logistics &mdash; 360° VIEWER</span>
             </div>
 
             <!-- stage -->
@@ -95,7 +95,7 @@
                 <div class="v360-loading" id="v360-loading">
                     <div class="v360-spinner"></div>
                     <div class="v360-progress-wrap"><div class="v360-progress-fill" id="v360-pfill"></div></div>
-                    <div class="v360-loading-text" id="v360-ltxt">Loading… 0 / 28</div>
+                    <div class="v360-loading-text" id="v360-ltxt">Loading…</div>
                 </div>
                 <!-- Drag hint -->
                 <div class="v360-hint" id="v360-hint">
@@ -109,27 +109,6 @@
                 <div class="v360-floor"></div>
             </div>
 
-            <!-- controls bar -->
-            <div class="viewer360-bar">
-                <div class="v360-counter">Frame <strong id="v360-fnum">1</strong> / 28</div>
-
-                <div class="v360-scrubber-wrap">
-                    <span class="v360-scr-label">0°</span>
-                    <input type="range" id="v360-scrubber" min="0" max="27" value="0" step="1" class="v360-scrubber" />
-                    <span class="v360-scr-label">360°</span>
-                </div>
-
-                <div class="v360-speed-btns">
-                    <button class="v360-speed-btn" data-spd="0.5">0.5×</button>
-                    <button class="v360-speed-btn v360-active" data-spd="1">1×</button>
-                    <button class="v360-speed-btn" data-spd="2">2×</button>
-                </div>
-
-                <button class="v360-rotate-btn" id="v360-rotbtn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-                    Auto Rotate
-                </button>
-            </div>
         </div>
     </div>
 

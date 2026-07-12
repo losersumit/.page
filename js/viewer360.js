@@ -63,8 +63,8 @@
     imgs[current].classList.remove('v360-visible');
     current = idx;
     imgs[current].classList.add('v360-visible');
-    fnum.textContent   = current + 1;
-    scrubber.value     = current;
+    if (fnum) fnum.textContent = current + 1;
+    if (scrubber) scrubber.value = current;
   }
 
   /* ── Dismiss hint ─────────────────────────────────────── */
@@ -78,17 +78,17 @@
   function startAuto() {
     stopAuto();
     autoOn = true;
-    rotBtn.classList.add('v360-active');
+    if (rotBtn) rotBtn.classList.add('v360-active');
     autoTimer = setInterval(() => goTo(current + 1), Math.round(80 / sensitivity));
   }
   function stopAuto() {
     if (!autoOn) return;
     autoOn = false;
-    rotBtn.classList.remove('v360-active');
+    if (rotBtn) rotBtn.classList.remove('v360-active');
     clearInterval(autoTimer);
     autoTimer = null;
   }
-  rotBtn.addEventListener('click', () => autoOn ? stopAuto() : startAuto());
+  if (rotBtn) rotBtn.addEventListener('click', () => autoOn ? stopAuto() : startAuto());
 
   /* ── Mouse drag ───────────────────────────────────────── */
   stage.addEventListener('mousedown', e => {
@@ -131,11 +131,13 @@
   }, { passive: false });
 
   /* ── Scrubber ─────────────────────────────────────────── */
-  scrubber.addEventListener('input', () => {
-    stopAuto();
-    dismissHint();
-    goTo(+scrubber.value);
-  });
+  if (scrubber) {
+    scrubber.addEventListener('input', () => {
+      stopAuto();
+      dismissHint();
+      goTo(+scrubber.value);
+    });
+  }
 
   /* ── Keyboard (only when viewer is in view) ───────────── */
   window.addEventListener('keydown', e => {
