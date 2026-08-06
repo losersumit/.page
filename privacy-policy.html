@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy | Unified VTC System</title>
+    <meta name="theme-color" content="#e8a020">
+    <link rel="icon" type="image/png" href="Assets/NMC_logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .subpage-hero {
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 60px 60px;
+            position: relative;
+            background: linear-gradient(to bottom, rgba(10,22,40,.95) 0%, rgba(10,22,40,.75) 100%);
+            border-bottom: 1px solid var(--border);
+        }
+        .subpage-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 0%, rgba(232,160,32,.13) 0%, transparent 65%);
+            pointer-events: none;
+        }
+        .subpage-hero .section-tag  { margin-bottom: 12px; }
+        .subpage-hero .section-title { margin-bottom: 10px; }
+        .subpage-hero .section-sub  { margin: 0 auto; }
+
+        .subpage-main {
+            padding: 60px 60px 100px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        @media (max-width: 768px) {
+            .subpage-hero { padding: 110px 24px 50px; }
+            .subpage-main { padding: 40px 24px 80px; }
+        }
+
+        .legal-content {
+            line-height: 1.8;
+            font-size: 16px;
+            color: rgba(240, 244, 255, 0.85);
+        }
+        .legal-content h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 28px;
+            color: var(--gold);
+            margin-top: 40px;
+            margin-bottom: 15px;
+            letter-spacing: 0.05em;
+        }
+        .legal-content p {
+            margin-bottom: 20px;
+        }
+        .legal-content ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+            list-style-type: square;
+        }
+        .legal-content li {
+            margin-bottom: 10px;
+        }
+        .last-updated {
+            font-size: 14px;
+            color: var(--gold);
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═══════════════════════ NAV ═══════════════════════════ -->
+    <nav>
+        <div class="nav-logo">
+            <a href="index.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;">
+                <img src="Assets/NMC_logo.png" alt="NMC Logo"
+                    style="width: 42px; height: 42px; object-fit: contain; filter: drop-shadow(0 0 10px rgba(232, 160, 32, 0.4));">
+                <span>Unified VTC System</span>
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">← Home</a>
+            <a href="divisions.html">Divisions</a>
+            <a href="fleet.html">Fleet</a>
+            <a href="partners.html">Partners</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="leaderboard.html">Our Officers</a>
+        </div>
+        <button onclick="openEnlistModal()" class="nav-btn" style="border:none; cursor:pointer;">Enlist Now</button>
+    </nav>
+
+    <!-- ── Sub-page hero ── -->
+    <div class="subpage-hero">
+        <div class="section-tag">Privacy Policy</div>
+        <h2 class="section-title">UVS Bot <span style="color:var(--gold)">Privacy Policy</span></h2>
+        <p class="section-sub">Understand how the Unified VTC System (UVS) bot collects, stores, and uses your data.</p>
+    </div>
+
+    <!-- ═══════════════════════ MAIN CONTENT ═══════════════════ -->
+    <div class="subpage-main">
+        <div class="legal-content">
+            <div class="last-updated">Last Updated: August 6, 2026</div>
+
+            <p>Unified VTC System ("we," "our," or "us") operates the UVS Discord bot ("UVS Bot"). We are committed to protecting the privacy of our users. This Privacy Policy details what information we collect, how it is used, and your control options.</p>
+
+            <h3>1. Information We Collect</h3>
+            <p>The UVS Bot collects and processes limited data to perform its functions as a virtual trucking log, leaderboards, and cross-server transmission tool. This includes:</p>
+            <ul>
+                <li><strong>Discord Account Information:</strong> Discord User IDs, usernames, and server-specific nicknames (used to create personal profiles, record scores, and map stats).</li>
+                <li><strong>Guild/Server Information:</strong> Server IDs, channel IDs, configuration settings, and authorized member lists (used for server white-listing, leaderboard message locations, and permissions).</li>
+                <li><strong>Image Submissions:</strong> Job log screenshot attachments submitted by users in designated channels. These screenshots are processed using AI vision endpoints (such as Google Gemini/Groq APIs) to extract trucking data (e.g., speed, level, mileage, clean deliveries) and update database stats.</li>
+                <li><strong>Radio Transmission Content:</strong> Messages sent by users in channels explicitly configured for UVS cross-server radio frequencies (+rd prefix/channels). These messages are temporarily processed to distribute them to other connected Discord servers on the same frequency.</li>
+            </ul>
+
+            <h3>2. How We Use the Information</h3>
+            <p>We use the collected information solely to provide and improve UVS features, including:</p>
+            <ul>
+                <li>Updating and displaying Virtual Trucking Company (VTC) leaderboards (distance, level, speed, net worth, time, safety stats).</li>
+                <li>Verifying trucking telemetry submissions for anti-cheat protection.</li>
+                <li>Syncing display names and checking server member changes for recruitment/surveillance metrics.</li>
+                <li>Routing cross-server message transmissions on the central radio frequency network.</li>
+            </ul>
+
+            <h3>3. Data Storage and Third-Party Services</h3>
+            <p>Your data is securely stored in our central database hosted on <strong>Supabase</strong>. Additionally, screenshot uploads are analyzed via third-party AI vision endpoints (Google Gemini and Groq API keys) for telemetric data parsing. We do not sell, trade, or distribute your personal data to any external marketing agencies.</p>
+
+            <h3>4. Data Retention and Deletion</h3>
+            <p>We retain statistics and user data as long as you remain a member of an approved UVS-integrated server or VTC. You have the right to request deletion of your information at any time. Upon request, all stats, logs, and account associations will be permanently removed from our active database.</p>
+
+            <h3>5. Contact for Data Requests</h3>
+            <p>If you want to request data deletion, review your stored data, or report concerns, please contact the UVS Administration Team via our official <a href="https://discord.gg/qwRUQ6msT8" target="_blank" style="color: var(--gold); text-decoration: underline;">Discord Server</a> or email us directly at <a href="mailto:contact@nmc-logistics.xyz" style="color: var(--gold); text-decoration: underline;">contact@nmc-logistics.xyz</a>.</p>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════ FOOTER ══════════════════════════════ -->
+    <footer style="margin-top:auto;">
+        <div class="footer-copy" style="text-align:center; width:100%;">© 2026 National Mobility Command / Unified VTC System. All rights reserved.</div>
+    </footer>
+
+    <!-- MODAL (hidden placeholder so app.js doesn't throw errors) -->
+    <div id="enlistModal" class="modal-overlay"></div>
+
+    <script src="js/supabase.min.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
